@@ -1,5 +1,4 @@
-import React, { useContext } from 'react'
-import { useState } from 'react'
+import React, { useContext,useState } from 'react'
 import { AdminContext } from '../context/AdminContext'
 import axios  from 'axios'
 import { toast } from 'react-toastify'
@@ -12,13 +11,21 @@ const Login = () => {
   const {setAtoken, backendUrl} = useContext(AdminContext)
 const onSubmitHandler = async (event) => {
   event.preventDefault();
+  if (!backendUrl) {
+    console.error('Error: backendUrl is undefined. Please check the AdminContext.');
+    toast.error('Server URL is not set. Please contact the admin.');
+    return;
+  }
+
   try {
+    console.log('Backend URL:', backendUrl);
     if (state === 'Admin') {
       const {data} = await axios.post(backendUrl + '/api/admin/loginAdmin', { email, password:Password });
     
       if ( data && data.success) {
         localStorage.setItem('aToken',data.token)
         setAtoken(data.token);
+        toast.success('Login successful!');
       } 
       else {
         toast.error(data.message)
@@ -29,7 +36,8 @@ const onSubmitHandler = async (event) => {
     }
 
   } catch (error) {
-    console.error('Error during login:', error);
+    console.error('Error during login:', error.response ? error.response.data : error);
+    toast.error('Login failed. Please check your credentials.');
   }
 }
   return (
