@@ -1,0 +1,1 @@
+in css 'md:flex hidden' It means that perform display hidden and none in medium size screen 

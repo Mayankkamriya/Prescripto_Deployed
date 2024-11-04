@@ -1,34 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes , Route } from 'react-router-dom'
+import Home from './pages/Home'
+import Doctor from './pages/Doctor'
+import About from './pages/About'
+import MyProfile from './pages/MyProfile'
+import Login from './pages/Login'
+import MyAppointment from './pages/MyAppointment'
+import Contact from './pages/Contact'
+import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='mx-4 sm:mx-[10%]'>
+      <Navbar/>
+      <Routes>
+        < Route path='/' element={<Home />} />
+        < Route path='/doctor' element={<Doctor />} />
+        < Route path='/doctor/:speciality' element={<Doctor />} />
+        < Route path='/login' element={<Login />} />
+        < Route path='/my-profile' element={<MyProfile />} />
+        < Route path='/about' element={<About />} />
+        < Route path='/my-appointment' element={<MyAppointment />} />
+        < Route path='/my-appointment/:docId' element={<MyAppointment />} />
+        < Route path='/contact' element={<Contact />} />
+      
+      </Routes>
+      <Footer/>
       </div>
-      <h1>Vite + React (Mayank frontend)</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
   )
 }
 
