@@ -1,12 +1,12 @@
 import React, { useContext,useState } from 'react'
-import { AdminContext } from '../context/AdminContext'
+import { AdminContext } from '../../context/AdminContext'
 import axios  from 'axios'
 import { toast } from 'react-toastify'
 
 const Login = () => {
   const [state,setState]= useState('Admin')
-  const [email,setEmail]= useState('Admin')
-  const [Password,setPassword]= useState('Admin')
+  const [email,setEmail]= useState('')
+  const [Password,setPassword]= useState('')
 
   const {setAtoken, backendUrl} = useContext(AdminContext)
 const onSubmitHandler = async (event) => {
