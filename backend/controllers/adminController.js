@@ -28,10 +28,16 @@ try {
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password,salt)
 
-    // upload image to cloudianry
-    // const imageUpload = await cloudinary.uploader.upload(image.path,{resource_type: "image"})
-    // const imageUrl = imageUpload.secure_url
+    if (!image) {
+      return res.json({ success: false, message: "Missing image file" });
+    }
 
+    // upload image to cloudianry
+    const imageUpload = await cloudinary.uploader.upload(image.path,{resource_type: "image"})
+    const imageUrl = imageUpload.secure_url
+    if( !imageUrl ){
+      return res.json({success:false, message:"Failed to upload image"})
+      }
 
   const doctorData = {
     name,
@@ -43,24 +49,14 @@ try {
     about, 
     fees, 
     address,
-    // address: JSON.parse(address),
     date: Date.now()
   }
   
   const newDoctor = new doctorModel(doctorData)
-  await newDoctor.save() // save data in DataBase
+  await newDoctor.save() // save data in DataBase  
 
-  // const existingDoctor = await doctorModel.findOne({ email });
-  // if (existingDoctor) {
-  //   return res.status(400).json({ success: false, message: "Email already exists" });
-  // }
-  
-
-    // console.log({name, email, password, speciality, degree, experience, about, fees, address },image)
-    console.log({name, email, password, speciality, degree, experience, about, fees, address })
-
+    console.log({name, email, password, speciality, degree, experience, about, fees, address },image)
     console.log('Parsed Address:', JSON.parse(address));
-
 
     return res.status(201).json({success:true , message: 'Doctor added successfully!' });
   
@@ -74,7 +70,6 @@ try {
 export const loginAdmin = async (req,res) =>{
 try {
   const {email,password} =req.body
-
 
 if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD ) {
 
@@ -91,4 +86,3 @@ else {
 
 }
 }
-
