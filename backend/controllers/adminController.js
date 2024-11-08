@@ -3,6 +3,7 @@ import bcrypt from "bcrypt"
 import {v2 as cloudinary} from "cloudinary"
 import doctorModel from "../models/doctorModel.js";
 import jwt from 'jsonwebtoken'
+import fs from 'fs'
 
 export const addDoctor = async (req, res) => {
 try {
@@ -33,13 +34,22 @@ try {
     }
 
     // upload image to cloudianry
-    const imageUpload = await cloudinary.uploader.upload(image.path,{resource_type: "image"})
+ const imageUpload = await cloudinary.uploader.upload(image.path,{resource_type: "image"})
+    // const imageUpload = await cloudinary.uploader.upload(image.path.replace(/\\/g, "/"),{resource_type: "image"})
+
     const imageUrl = imageUpload.secure_url
     if( !imageUrl ){
       return res.json({success:false, message:"Failed to upload image"})
+      } else{
+
+        fs.unlink(image.path, (err) => {
+          if (err) console.error('Error deleting file:', err);
+        });
+
       }
 
   const doctorData = {
+    image: imageUrl,
     name,
     email,
     password: hashedPassword, 
@@ -85,4 +95,17 @@ else {
   return res.status(500).json({success:false , message: 'Failed to authenticate admin', error: error.message });
 
 }
+}
+
+// API to get all doctors list for admin panel
+export const allDoctors = async (req,res)=> {
+  try {
+    const doctors = await doctorModel.find({}).select('-password')
+    console.log('Doctors in backend:', doctors);
+    res.json({success:true, doctors})
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({success:false , message: error.message });
+  
+  }
 }
