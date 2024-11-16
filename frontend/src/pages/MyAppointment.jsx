@@ -2,12 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import Appointment from './Appointment.jsx'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const MyAppointment = () => {
-  const { backendUrl, token } = useContext(AppContext)
+  const { backendUrl, token,getDoctorsData   } = useContext(AppContext)
 
   const [appointments, setAppointments] = useState([])
-  const months= ["","Jan","Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Srp", "Oct", "Nov", "Dec"]
+  const months= ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Srp", "Oct", "Nov", "Dec"]
+
+ const navigate = useNavigate()
 
   const slotDateFormat = (slotDate)=> {
     const dateArray = slotDate.split('_')
@@ -19,7 +23,7 @@ const MyAppointment = () => {
       const {data} = await axios.get(backendUrl + '/api/user/appointments', {headers:{token}})
       if (data.success) {
         setAppointments(data.appointments.reverse())
-      console.log(data.appointments)
+      console.log('appointments data',data.appointments)
       }
     
     } catch (error) {
@@ -28,12 +32,82 @@ const MyAppointment = () => {
     }
   }
 
-  useEffect(()=>{
-    if (token) {
+const cancelAppointment = async (appointmentId) =>{
+    
+  try {
+    const {data} = await axios.post(backendUrl + '/api/user/cancel-appointment', {appointmentId}, {headers:{token}})
+    
+    if (data.success) {
+      toast.success(data.message)
       getUserAppointments()
-    }
-  },[token])
+      getDoctorsData()
 
+    } else {
+      toast.error(data.message)
+    }
+
+  } catch (error) {
+    console.log(error)
+    toast.error(error.message)
+  }
+}
+
+
+const initPay= (order)=>{
+const options= {
+  key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+  amount: order.amount,
+  currency: order.currency,
+  name:'Appointmnet Payment',
+  description: 'Appointment Payment',
+  order_id: order.id,
+  receipt: order.receipt,
+  handler: async(response)=>{
+    console.log(' payment response',response)
+  
+  try {
+    const {data} = await axios.post(backendUrl + '/api/user/verifyRazorpay', response, {headers:{token}})
+    if (data.success) {
+      getUserAppointments()
+      navigate('/my-appointments')
+    }
+  } catch (error) {
+    console.log(error)
+    toast.error(error.message)
+  
+  }
+  
+  
+  }
+}
+    const rzp = new window.Razorpay(options)
+    rzp.open()
+}
+ 
+
+const appointmentRozarpay = async (appointmentId) =>{
+  try {
+    
+    const {data} = await axios.post(backendUrl + '/api/user/payment-razorpay', {appointmentId},{headers: {token}})
+    if (data.success) {
+      initPay(daat.order)
+      console.log('order data',data.order)
+      
+    }  else {
+      console.log('data not sending success in Razorpay')
+    }
+    
+  } catch (error) {
+    console.error('Error in Razorpay payment request:', error);
+  }
+  }
+
+
+useEffect(()=>{
+  if (token) {
+    getUserAppointments()
+  }
+},[token])
 
   return (
     <div>
@@ -55,8 +129,11 @@ const MyAppointment = () => {
           </div>
           <div></div>
           <div className='flex flex-col gap-2 justify-end'>
-            <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button>
-            <button className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>cancel appointment</button>
+            {!item.cancelled && item.payment && <button className='sm:min-w-48 py-2 border rounded text-stone-500 bg-indigo-50 '>Paid</button> }
+            {!item.cancelled && !item.payment && <button onClick={() => appointmentRozarpay(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button> }
+            {!item.cancelled && <button onClick={() => cancelAppointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>cancel appointment</button> }
+
+            {item.cancelled &&  <button className='sm:min w-48 py-2 border border-red-500 rounded text-red-500'>Appointment Cancelled</button> }
           </div>
         </div>
       )

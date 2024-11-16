@@ -4,6 +4,8 @@ import {v2 as cloudinary} from "cloudinary"
 import doctorModel from "../models/doctorModel.js";
 import jwt from 'jsonwebtoken'
 import fs from 'fs'
+import appointmentModel from "../models/appointmentModel.js";
+
 
 export const addDoctor = async (req, res) => {
 try {
@@ -107,5 +109,17 @@ export const allDoctors = async (req,res)=> {
     console.error(error);
     return res.status(500).json({success:false , message: error.message });
   
+  }
+}
+
+export const appointmentAdmin = async (req, res)=> {
+  try {
+    
+    const appointment = await appointmentModel.frind({})
+    res.json({ success: false, message: error.message})
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({success:false , message: error.message });
   }
 }

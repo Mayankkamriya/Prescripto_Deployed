@@ -23,7 +23,7 @@ const getAllDoctors = async()=>{
         
         if (data.success) {
             setDoctors(data.doctors)
-            console.log(data.doctors)
+            console.log('doctors data',data.doctors)
         } else {
             toast.error(data.message)
         }    
