@@ -90,7 +90,7 @@ const appointmentRozarpay = async (appointmentId) =>{
     
     const {data} = await axios.post(backendUrl + '/api/user/payment-razorpay', {appointmentId},{headers: {token}})
     if (data.success) {
-      initPay(daat.order)
+      // initPay(data.order)
       console.log('order data',data.order)
       
     }  else {

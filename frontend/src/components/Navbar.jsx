@@ -13,6 +13,7 @@ const [showMenu, setShowMenu]= useState(false)
   const logout = ()=>{
     setToken( false )
     localStorage.removeItem('token')
+    navigate('/login')
   }
 
   return (
