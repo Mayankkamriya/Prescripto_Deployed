@@ -13,6 +13,26 @@ const MyAppointment = () => {
 
  const navigate = useNavigate()
 
+
+ const handlePayment = async (amount,id) =>{
+  const data = {
+    name: "mayank kamriya",
+    mobileNumber:1234567890,
+    amount: amount,
+    // appointmentId : id
+  }
+  try {
+    const response = await axios.post('http://localhost:5000/create-order', data)
+
+    if (!response) return;
+    
+    console.log(response.data)
+    window.location.href = response.data.url
+  } catch (error) {
+    console.log("error in payment", error)
+  }
+}
+
   const slotDateFormat = (slotDate)=> {
     const dateArray = slotDate.split('_')
     return dateArray[0] + " "+ months[Number(dateArray[1])] +" "+ dateArray[2]
@@ -53,54 +73,82 @@ const cancelAppointment = async (appointmentId) =>{
 }
 
 
-const initPay= (order)=>{
-const options= {
-  key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-  amount: order.amount,
-  currency: order.currency,
-  name:'Appointmnet Payment',
-  description: 'Appointment Payment',
-  order_id: order.id,
-  receipt: order.receipt,
-  handler: async(response)=>{
-    console.log(' payment response',response)
+// const initPay= (order)=>{
+// const options= {
+//   key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+//   amount: order.amount,
+//   currency: order.currency,
+//   name:'Appointmnet Payment',
+//   description: 'Appointment Payment',
+//   order_id: order.id,
+//   receipt: order.receipt,
+//   handler: async(response)=>{
+//     console.log(' payment response',response)
   
-  try {
-    const {data} = await axios.post(backendUrl + '/api/user/verifyRazorpay', response, {headers:{token}})
-    if (data.success) {
-      getUserAppointments()
-      navigate('/my-appointments')
-    }
-  } catch (error) {
-    console.log(error)
-    toast.error(error.message)
+//   try {
+//     const {data} = await axios.post(backendUrl + '/api/user/verifyRazorpay', response, {headers:{token}})
+//     if (data.success) {
+//       getUserAppointments()
+//       navigate('/my-appointments')
+//     }
+//   } catch (error) {
+//     console.log(error)
+//     toast.error(error.message)
   
-  }
+//   }
   
-  
-  }
-}
-    const rzp = new window.Razorpay(options)
-    rzp.open()
-}
+//   }
+// }
+// }
  
 
-const appointmentRozarpay = async (appointmentId) =>{
-  try {
-    
-    const {data} = await axios.post(backendUrl + '/api/user/payment-razorpay', {appointmentId},{headers: {token}})
-    if (data.success) {
-      // initPay(data.order)
-      console.log('order data',data.order)
+// const initPhonePePay = (order) => {
+//   const { redirectUrl } = order;
+//  console.log('redirectUrl ',redirectUrl)
+//   if (redirectUrl) {
+//     // Redirect user to PhonePe payment page
+//     window.location.href = redirectUrl;
+//   } else {
+//     console.error('Invalid PhonePe order details: Missing redirect URL');
+//     toast.error('Payment initiation failed');
+//   }
+// };
+
+
+
+// const appointmentPhonePe = async (appointmentId) => {
+//   try {
+//     const { data } = await axios.post( backendUrl + '/api/user/payment-phonepe', {appointmentId }, { headers:{token}});
+//     console.log("API Response....: ", data); 
+
+//     if (data.success) {
+//       // Initiate payment with PhonePe order details
+//       console.log('PhonePe order data:', data.order);
+//       initPhonePePay(data.order);
+//     } else {
+//       console.error('PhonePe payment initiation failed.');
+//     }
+//   } catch (error) {
+//     console.error('Error in PhonePe payment request:', error);
+//   }
+// };
+
+
+// const appointmentRozarpay = async (appointmentId) =>{
+//   try {
+//     const {data} = await axios.post(backendUrl + '/api/user/payment-razorpay', {appointmentId},{headers: {token}})
+//     if (data.success) {
+//       // initPay(data.order)
+//       console.log('order data',data.order)
       
-    }  else {
-      console.log('data not sending success in Razorpay')
-    }
+//     }  else {
+//       console.log('data not sending success in Razorpay')
+//     }
     
-  } catch (error) {
-    console.error('Error in Razorpay payment request:', error);
-  }
-  }
+//   } catch (error) {
+//     console.error('Error in Razorpay payment request:', error);
+//   }
+//   }
 
 
 useEffect(()=>{
@@ -130,7 +178,10 @@ useEffect(()=>{
           <div></div>
           <div className='flex flex-col gap-2 justify-end'>
             {!item.cancelled && item.payment && <button className='sm:min-w-48 py-2 border rounded text-stone-500 bg-indigo-50 '>Paid</button> }
-            {!item.cancelled && !item.payment && <button onClick={() => appointmentRozarpay(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button> }
+            {!item.cancelled && !item.payment && <button onClick={() => handlePayment(item.amount,item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button> } 
+                        
+                        {/* {!item.cancelled && !item.payment && <button onClick={()=>appointmentPhonePe(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button> } */}
+
             {!item.cancelled && <button onClick={() => cancelAppointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>cancel appointment</button> }
 
             {item.cancelled &&  <button className='sm:min w-48 py-2 border border-red-500 rounded text-red-500'>Appointment Cancelled</button> }

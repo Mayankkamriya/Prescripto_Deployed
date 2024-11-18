@@ -1,18 +1,36 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { AdminContext } from '../context/AdminContext'
 import { assets } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
+import { DoctorContext } from '../context/DoctorContext'
 
   const Navbar = () => {
-  const {atoken,setAToken} = useContext(AdminContext)
+  const {atoken,setAtoken} = useContext(AdminContext)
+  const {dToken,setDToken} = useContext(DoctorContext)
   const navigate = useNavigate()
 
-  // after click on logout it should navigate to path '/' then set setAToken to empty string then remove it from localStorage 
   const logout=()=>{
-      navigate('/')
-      atoken && setAToken('')
-      atoken && localStorage.removeItem('aToken')
+
+    if (atoken) {
+      localStorage.removeItem('aToken');
+      setAtoken('');
+    }
+  
+    if (dToken) {
+      localStorage.removeItem('dToken');
+      setDToken('');
+    }
+    
+    navigate('/login', { replace: true })
+    window.location.reload();
   }
+
+  useEffect(() => {
+    if (!atoken ) {
+      navigate('/login', { replace: true });
+    }
+  }, [atoken]);
+  
 
   return (
     <div className='flex justify-between items-center px-4 sm:px-10 py-3 border-b bg-white'>

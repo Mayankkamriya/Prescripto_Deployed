@@ -4,7 +4,7 @@ import doctorModel from '../models/doctorModel.js'
 import appointmentModel from '../models/appointmentModel.js'
 import jwt from 'jsonwebtoken'
 import {v2 as cloudinary} from 'cloudinary'
-import razorpay from 'razorpay'
+import axios from 'axios'
 
 //API to register user 
 const registerUser = async (req,res) =>{
@@ -217,67 +217,63 @@ try {
 
 }
 
-const razorpayInstance = new razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-})
-
 //API to make payment of appointment using razorpay
-const paymentRazorpay = async (req, res)=>{
-    
-try {
-    const {appointmentId} = req.body
-    const appointmentData= await appointmentModel.findById(appointmentId)
-    console.log('appointmentData fro proceeding payment',appointmentData)
 
-    if (!appointmentData || appointmentData.cancelled) {
-        return res.json({success:false, message:"Appointment Cancelled or not found"})
-    }
-
-// creating options for the razorpay payment 
-const options= {
-    amount: appointmentData.amount * 100,
-    currency: process.env.CURRENCY,
-    //    currency: 'INR',
-    receipt: appointmentId
-}
-console.log('proceding towards order creation...')
-
-// creation of an order
-   const order = await razorpayInstance.orders.create(options);
-    res.json({success:true, order})
-    console.log('pass order:' , order)
-
-}  catch (error) {
-    console.log(error)
-  res.json({success:false , message:error.message})
-} 
-}
-
-//API to verify payment of razorpay
-const verifyRazorpay = async (req,res) =>{
-  try {
-    
-    const {razorpay_order_id} = req.body
-    const orderInfo = await razorpayInstance.orders.fetch(razorpay_order_id)
+const paymentPhonePe = async (req, res) => {
+    try {
+      const { appointmentId } = req.body;
+      const appointmentData = await appointmentModel.findById(appointmentId);
+      console.log('appointmentData for proceeding payment', appointmentData);
   
-    console.log(orderInfo)
-  
-      if(orderInfo.status === 'paid'){
-        await appointmentModel.findOneAndUpdate(orderInfo.receipt, {payment:true})
-        res.json({success:true, message:"Payment Successful"})  
-      } else {
-        res.json({success:false, message:"Payment failed"})
+      if (!appointmentData || appointmentData.cancelled) {
+        return res.json({ success: false, message: "Appointment Cancelled or not found" });
       }
-
-
-  } catch (error) {
-    console.log(error)
-    res.json({success:false , message:error.message})
   
-  }
-  }
+      // Payment data for PhonePe (mock example)
+      const paymentData = {
+        amount: appointmentData.amount,
+        currency: 'INR', // or use your currency
+        receipt: appointmentId,
+        // Add more fields if required by PhonePe API
+      };
+      console.log('proceding towards order creation...')
+  
+      // Call to PhonePe API to create an order
+      const response = await axios.post('https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', paymentData);
+  
+      if (!response) return;
+
+      if (response.data.success) {
+        // Extract the redirect URL from PhonePe's response
+        const { redirectUrl } = response.data;
+        res.json({ success: true, redirectUrl });
+      } else {
+        res.json({ success: false, message: "PhonePe payment initiation failed" });
+      }
+    } catch (error) {
+      console.log(error);
+      res.json({ success: false, message: error.message });
+    }
+  };
+
+
+const verifyPhonePePayment = async (req, res) => {
+    try {
+      const { paymentId, orderId, status } = req.body; // Fields may vary based on PhonePe API
+      if (status === 'paid') {
+        // Update the appointment with payment success
+        await appointmentModel.findOneAndUpdate({ _id: orderId }, { payment: true });
+        res.json({ success: true, message: "Payment Successful" });
+      } else {
+        res.json({ success: false, message: "Payment failed" });
+      }
+    } catch (error) {
+      console.log(error);
+      res.json({ success: false, message: error.message });
+    }
+  };
+
 
 export {registerUser, loginUser, getProfile, updateProfile,
     bookAppointment, listAppointment, cancelAppointment,
-    paymentRazorpay, verifyRazorpay }
+    paymentPhonePe, verifyPhonePePayment }
