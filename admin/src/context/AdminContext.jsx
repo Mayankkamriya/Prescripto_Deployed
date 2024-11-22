@@ -18,7 +18,6 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL
             // headers: { Authorization: `Bearer ${atoken}`} 
             headers:{atoken} 
         })
-        console.log('API Response:', data); 
         
         if (data.success) {
             setDoctors(data.doctors)
@@ -48,7 +47,6 @@ const changedAvailability = async (docId)=>{
 
 const getAllAppointments = async () =>{
     try {
-        console.log('getallappointment proceeding...')
         const {data} = await axios.get(backendUrl +'/api/admin/appointments', {headers:{atoken}})
 
         if (data.success) {
@@ -57,7 +55,7 @@ const getAllAppointments = async () =>{
 
         } else {
             toast.error(data.message)
-            console.log('not receivign  admin appointment')
+            console.log('not receiving  admin appointment')
         }
 
     } catch (error) {

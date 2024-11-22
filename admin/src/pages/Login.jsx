@@ -12,16 +12,17 @@ const Login = () => {
   const {setAtoken, backendUrl} = useContext(AdminContext)
   const {setDToken} = useContext(DoctorContext)
 
-const onSubmitHandler = async (event) => {
+  const [docId,setdocId] = useState('')
+  
+  const onSubmitHandler = async (event) => {
   event.preventDefault();
-  if (!backendUrl) {
-    console.error('Error: backendUrl is undefined. Please check the AdminContext.');
-    toast.error('Server URL is not set. Please contact the admin.');
-    return;
-  }
+    if (!backendUrl) {
+      console.error('Error: backendUrl is undefined. Please check the AdminContext.');
+      toast.error('Server URL is not set. Please contact the admin.');
+      return;
+    }
 
   try {
-    console.log('Backend URL:', backendUrl);
     if (state === 'Admin') {
       const {data} = await axios.post(backendUrl + '/api/admin/loginAdmin', { email, password:Password });
     
@@ -39,12 +40,13 @@ const onSubmitHandler = async (event) => {
       const {data} = await axios.post(backendUrl + '/api/doctor/login', { email, password:Password });
 
       if ( data && data.success) {
+
         localStorage.setItem('dToken',data.token)
         setDToken(data.token);
+        setdocId(data.id);
         toast.success('Login successful!');
-        console.log(data.token)
-      } 
-      else {
+        
+      } else {
         toast.error(data.message)
       }
     }

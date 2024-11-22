@@ -2,13 +2,14 @@ import bcrypt from 'bcrypt'
 import userModel from '../models/userModel.js'
 import doctorModel from '../models/doctorModel.js'
 import appointmentModel from '../models/appointmentModel.js'
-import jwt from 'jsonwebtoken'
-import {v2 as cloudinary} from 'cloudinary'
+import  cloudinary from '../config/cloudinary.js'
+// import jwt from "jsonwebtoken";
+import * as jwt from 'jsonwebtoken';
 import axios from 'axios'
 
 //API to register user 
 const registerUser = async (req,res) =>{
-
+const secret ='greatstack'
     try {
         const {name,email,password}= req.body
 
@@ -34,9 +35,10 @@ const registerUser = async (req,res) =>{
     const newUser = new userModel(userData)
     const user = await newUser.save()
 
-    const token = jwt.sign({id:user._id}, process.env.JWT_SECRET )
-    res.json({success:true , token})
+    // const token = jwt.sign({id:user._id}, process.env.JWT_SECRET )
+    const token = jwt.sign({id:user._id}, secret )
 
+    res.json({success:true , token})
     } catch (error) {
         console.log(error)
         res.json({success:false , message:error.message}) 
@@ -57,7 +59,7 @@ const loginUser = async (req,res) =>{
     const isMatch = await bcrypt.compare(password, user.password)
 
     if (isMatch) {
-        const token = jwt.sign({id:user._id}, process.env.JWT_SECRET)
+        const token = jwt.sign({id:user._id}, secret)
         res.json({success:true, token })
     } else  {
         res.json({success:false, message:"Invalid credentials" })
@@ -262,7 +264,7 @@ const verifyPhonePePayment = async (req, res) => {
       const { paymentId, orderId, status } = req.body; // Fields may vary based on PhonePe API
       if (status === 'paid') {
         // Update the appointment with payment success
-        await appointmentModel.findOneAndUpdate({ _id: orderId }, { payment: true });
+        await appointmentModel.findByIdAndUpdate({ _id: orderId }, { payment: true });
         res.json({ success: true, message: "Payment Successful" });
       } else {
         res.json({ success: false, message: "Payment failed" });

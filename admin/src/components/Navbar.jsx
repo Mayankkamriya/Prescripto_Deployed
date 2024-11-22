@@ -22,7 +22,7 @@ import { DoctorContext } from '../context/DoctorContext'
     }
     
     navigate('/login', { replace: true })
-    window.location.reload();
+    // window.location.reload();
   }
 
   useEffect(() => {
