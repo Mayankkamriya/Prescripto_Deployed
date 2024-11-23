@@ -77,6 +77,20 @@ const cancelAppointment = async (appointmentId)=>{
     }
 }
 
+const CompleteAppointment = async (appointmentId) =>{
+    try {
+        const data  = await axios.post(backendUrl+'/api/admin/complete-appointment', {appointmentId}, {headers:{atoken} }); 
+
+        if (data.success) {
+            toast.success(data.message)
+            getAllAppointments()
+        }
+    } catch (error) {
+        console.log(error)
+        toast.error(error.message)
+    }
+}
+
 const getDashData =async ()=>{
     try {
         const {data} = await axios.get( backendUrl + '/api/admin/dashboard', {headers: {atoken}})
@@ -97,7 +111,7 @@ const getDashData =async ()=>{
         atoken,setAtoken,backendUrl,getAllDoctors,
         doctors, changedAvailability, appointments, 
         setAppointments, getAllAppointments, cancelAppointment,
-        dashData, getDashData
+        dashData, getDashData, CompleteAppointment
     }
 return (
 

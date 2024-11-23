@@ -2,14 +2,12 @@ import React, { useContext, useEffect } from 'react'
 import { DoctorContext } from '../../context/DoctorContext'
 import { AppContext } from '../../context/AppContext'
 import { assets } from '../../assets/assets'
-// import { cancelAppointment } from '../../../../backend/controllers/userController'
 
 const DoctorsAppointment = () => {
 
   const {dToken, appointments, getAppointments, CancelAppointment, CompleteAppointment} = useContext(DoctorContext)
   const {calculateAge, slotDateFormat, currency}= useContext(AppContext)
 
-  
   useEffect(()=>{
     if (dToken) {
       getAppointments()
