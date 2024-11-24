@@ -150,9 +150,38 @@ try {
 } catch (error) {
   console.log(error)
   res.json({success:false , message:error.message})
-}
+}}
+
+
+// API for appointment complete
+export const appointmentcomplete = async (req, res)=>{
+    
+  try { 
+    const { appointmentId} = req.body
+    const appointmentData = await appointmentModel.findById(appointmentId)
   
+    if (!appointmentData) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+    await appointmentModel.findByIdAndUpdate(appointmentId, {isCompleted:true})
+  
+    // releasing doctor slot
+    const {docId, slotDate, slotTime} = appointmentData
+    const doctorData = await doctorModel.findById(docId)
+
+    let slots_booked = doctorData.slots_booked
+  
+    slots_booked[slotDate] = slots_booked[slotDate].filter(e => e !== slotTime)
+    await doctorModel.findByIdAndUpdate(docId,{slots_booked})
+  
+    res.json({success:true, message:'Appointment complete'})
+  
+  } catch (error) {
+    console.log(error)
+    res.json({success:false , message:error.message})
   }
+  }
+
 
 //API to get dashboard data fro admin panel
 export const adminDashboard = async (rreq,res) =>{

@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import React from 'react';
 import Checkout from '../Checkout'
+import Appointment from './pages/Appointment'
 
 
 // function Success() {
@@ -47,7 +48,7 @@ const App = () => {
         < Route path='/my-profile' element={<MyProfile />} />
         < Route path='/about' element={<About />} />
         < Route path='/my-appointment' element={<MyAppointment />} />
-        < Route path='/my-appointment/:docId' element={<MyAppointment />} />
+        < Route path='/my-appointment/:docId' element={<Appointment />} />
         < Route path='/contact' element={<Contact />} />
       
         {/* <Route path="/payment-success" element={<Success />} />

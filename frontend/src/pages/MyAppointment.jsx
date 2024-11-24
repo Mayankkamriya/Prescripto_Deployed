@@ -6,9 +6,9 @@ import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
 
 const MyAppointment = () => {
-  const { backendUrl, token,getDoctorsData   } = useContext(AppContext)
+  const { token, getUserAppointments, appointments, cancelAppointment  } = useContext(AppContext)
 
-  const [appointments, setAppointments] = useState([])
+  // const [appointments, setAppointments] = useState([])
   const months= ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Srp", "Oct", "Nov", "Dec"]
 
  const navigate = useNavigate()
@@ -37,41 +37,6 @@ const MyAppointment = () => {
     const dateArray = slotDate.split('_')
     return dateArray[0] + " "+ months[Number(dateArray[1])] +" "+ dateArray[2]
   }
-
-  const getUserAppointments = async () =>{
-    try {
-      const {data} = await axios.get(backendUrl + '/api/user/appointments', {headers:{token}})
-      if (data.success) {
-        setAppointments(data.appointments.reverse())
-      console.log('appointments data',data.appointments)
-      }
-    
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message)
-    }
-  }
-
-const cancelAppointment = async (appointmentId) =>{
-    
-  try {
-    const {data} = await axios.post(backendUrl + '/api/user/cancel-appointment', {appointmentId}, {headers:{token}})
-    
-    if (data.success) {
-      toast.success(data.message)
-      getUserAppointments()
-      getDoctorsData()
-
-    } else {
-      toast.error(data.message)
-    }
-
-  } catch (error) {
-    console.log(error)
-    toast.error(error.message)
-  }
-}
-
 
 // const initPay= (order)=>{
 // const options= {

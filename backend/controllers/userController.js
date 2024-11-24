@@ -4,12 +4,12 @@ import doctorModel from '../models/doctorModel.js'
 import appointmentModel from '../models/appointmentModel.js'
 import  cloudinary from '../config/cloudinary.js'
 // import jwt from "jsonwebtoken";
-import * as jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import axios from 'axios'
 
 //API to register user 
 const registerUser = async (req,res) =>{
-const secret ='greatstack'
+// const secret ='greatstack'
     try {
         const {name,email,password}= req.body
 
@@ -24,6 +24,7 @@ const secret ='greatstack'
     if ( password.length <8 ) {
         return res.json({success:false, message:"enter a strong password of atleast 8 character"})
     }
+    console.log('process.env.JWT_SECRET',process.env.JWT_SECRET)
     // hashing user password
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password,salt)
@@ -35,8 +36,7 @@ const secret ='greatstack'
     const newUser = new userModel(userData)
     const user = await newUser.save()
 
-    // const token = jwt.sign({id:user._id}, process.env.JWT_SECRET )
-    const token = jwt.sign({id:user._id}, secret )
+    const token = jwt.sign({id:user._id}, process.env.JWT_SECRET )
 
     res.json({success:true , token})
     } catch (error) {
@@ -59,7 +59,7 @@ const loginUser = async (req,res) =>{
     const isMatch = await bcrypt.compare(password, user.password)
 
     if (isMatch) {
-        const token = jwt.sign({id:user._id}, secret)
+        const token = jwt.sign({id:user._id}, process.env.JWT_SECRET)
         res.json({success:true, token })
     } else  {
         res.json({success:false, message:"Invalid credentials" })
@@ -219,7 +219,48 @@ try {
 
 }
 
+
+
+// const CompleteAppointment = async (appointmentId) =>{
+//     try {
+//         const data  = await axios.post(backendUrl+'/api/admin/complete-appointment', {appointmentId}, {headers:{atoken} }); 
+
+//         if (data.success) {
+//             toast.success(data.message)
+//             getAllAppointments()
+//         }
+//     } catch (error) {
+//         console.log(error)
+//         toast.error(error.message)
+//     }
+// }
+
+
+
 //API to make payment of appointment using razorpay
+
+// const appointmentComplete = async (req, res) =>{
+//     try {
+//       const {docId,appointmentId }= req.body
+//       const appointmentData = await appointmentModel.findById(appointmentId)
+      
+//       if (appointmentData && appointmentData.docId === docId) {
+           
+//         await appointmentModel.findByIdAndUpdate(appointmentId, {isCompleted: true})
+//         return res.json({success:true, message:'Appoitnmemnt Completed'})
+  
+//       } else {
+//         return res.json({success:false, message:'Mark Failed'})
+//       }
+      
+//     } catch (error) {
+//       console.log(error)
+//       res.json({success:false, message:error.message})
+//     }
+//   }
+
+
+
 
 const paymentPhonePe = async (req, res) => {
     try {
@@ -248,7 +289,7 @@ const paymentPhonePe = async (req, res) => {
       if (response.data.success) {
         // Extract the redirect URL from PhonePe's response
         const { redirectUrl } = response.data;
-        res.json({ success: true, redirectUrl });
+        res.json({ success: true, redirectUrl:"http://localhost:5173/my-appointment" });
       } else {
         res.json({ success: false, message: "PhonePe payment initiation failed" });
       }

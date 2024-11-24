@@ -44,7 +44,7 @@ const redirectUrl="http://localhost:5000/status"
 
 
 const successUrl="http://localhost:5173/my-appointment"
-const failureUrl="http://localhost:5173/payment-failure"
+const failureUrl="http://localhost:5173/my-appointment"
 
 // app.post('/api/user/payment-phonepe', async (req, res) => {
 //     const { appointmentId } = req.body;
@@ -150,33 +150,33 @@ console.log('req body ',req.body )
 });
 
 
-// app.post('/status', async (req, res) => {
-//     const merchantTransactionId = req.query.id;
+app.post('/status', async (req, res) => {
+    const merchantTransactionId = req.query.id;
 
-//     const keyIndex = 1
-//     const string  = `/pg/v1/status/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}` + process.env.PHONEPE_MERCHANT_KEY
-//     const sha256 = crypto.createHash('sha256').update(string).digest('hex')
-//     const checksum = sha256 + '###' + keyIndex
+    const keyIndex = 1
+    const string  = `/pg/v1/status/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}` + process.env.PHONEPE_MERCHANT_KEY
+    const sha256 = crypto.createHash('sha256').update(string).digest('hex')
+    const checksum = sha256 + '###' + keyIndex
 
-//     const option = {
-//         method: 'GET',
-//         url:`${MERCHANT_STATUS_URL}/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}`,
-//         headers: {
-//             accept : 'application/json',
-//             'Content-Type': 'application/json',
-//             'X-VERIFY': checksum,
-//             'X-MERCHANT-ID': process.env.PHONEPE_MERCHANT_ID
-//         },
-//     }
+    const option = {
+        method: 'GET',
+        url:`${MERCHANT_STATUS_URL}/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}`,
+        headers: {
+            accept : 'application/json',
+            'Content-Type': 'application/json',
+            'X-VERIFY': checksum,
+            'X-MERCHANT-ID': process.env.PHONEPE_MERCHANT_ID
+        },
+    }
 
-//     axios.request(option).then((response) => {
-//         if (response.data.success === true){
-//             return res.redirect(successUrl)
-//         }else{
-//             return res.redirect(failureUrl)
-//         }
-//     })
-// });
+    axios.request(option).then((response) => {
+        if (response.data.success === true){
+            return res.redirect(successUrl)
+        }else{
+            return res.redirect(failureUrl)
+        }
+    })
+});
 
 
 app.listen(port, ()=> 

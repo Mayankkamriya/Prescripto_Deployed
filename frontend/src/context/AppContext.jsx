@@ -10,7 +10,8 @@ const AppContextProvider =(props) =>{
     const [doctors,setDoctors] = useState([])
     const [token, setToken] = useState( localStorage.getItem('token')?localStorage.getItem('token'): false)
 
-    const [userData, setUserData] = useState(false) 
+    const [userData, setUserData] = useState(false)
+    const [appointments, setAppointments] = useState([]) 
 
 const getDoctorsData = async() =>{
     try {
@@ -43,10 +44,46 @@ const loadUserProfileData = async() =>{
     }
 }
 
+const getUserAppointments = async () =>{
+    try {
+      const {data} = await axios.get(backendUrl + '/api/user/appointments', {headers:{token}})
+      if (data.success) {
+        setAppointments(data.appointments.reverse())
+      console.log('appointments data',data.appointments)
+      }
+    
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+ 
+  const cancelAppointment = async (appointmentId) =>{
+    
+    try {
+      const {data} = await axios.post(backendUrl + '/api/user/cancel-appointment', {appointmentId}, {headers:{token}})
+      
+      if (data.success) {
+        toast.success(data.message)
+        getUserAppointments()
+        getDoctorsData()
+  
+      } else {
+        toast.error(data.message)
+      }
+  
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
+
+
 const value={ doctors, currencySymbol,
     backendUrl, token ,setToken,
     userData, setUserData, loadUserProfileData,
-    getDoctorsData }
+    getDoctorsData, getUserAppointments, appointments,
+    setAppointments, cancelAppointment }
 
 useEffect(()=>{
     getDoctorsData()

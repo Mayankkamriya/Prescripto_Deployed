@@ -79,7 +79,7 @@ const cancelAppointment = async (appointmentId)=>{
 
 const CompleteAppointment = async (appointmentId) =>{
     try {
-        const data  = await axios.post(backendUrl+'/api/admin/complete-appointment', {appointmentId}, {headers:{atoken} }); 
+        const {data}  = await axios.post(backendUrl+'/api/admin/complete-appointment', {appointmentId}, {headers:{atoken} }); 
 
         if (data.success) {
             toast.success(data.message)

@@ -13,7 +13,7 @@ const [showMenu, setShowMenu]= useState(false)
   const logout = ()=>{
     setToken( false )
     localStorage.removeItem('token')
-    navigate('/login')
+    navigate('/login', { replace: true })
   }
 
   return (
@@ -57,7 +57,7 @@ const [showMenu, setShowMenu]= useState(false)
   </div>
 </div>
 
-      :<button onClick={() =>navigate('/login')} className='bg-primary text-white px-8 py-3 rounded-full font-light hidden md:block'>Create Account</button>
+      :<button onClick={() =>navigate('/login')} className='bg-primary text-white px-8 py-3 rounded-full font-light hidden md:block'>Create Accout / Login</button>
   }
     </div>
 
