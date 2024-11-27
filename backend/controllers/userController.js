@@ -6,6 +6,7 @@ import  cloudinary from '../config/cloudinary.js'
 // import jwt from "jsonwebtoken";
 import jwt from 'jsonwebtoken';
 import axios from 'axios'
+import crypto from 'crypto'
 
 //API to register user 
 const registerUser = async (req,res) =>{
@@ -185,6 +186,11 @@ const listAppointment = async (req,res) =>{
     }
 }
 
+
+let salt_key = process.env.PHONEPE_MERCHANT_KEY
+let merchant_id = process.env.PHONEPE_MERCHANT_ID
+
+
 // API to cancel appointment
 const cancelAppointment = async (req, res)=>{
     
@@ -219,94 +225,138 @@ try {
 
 }
 
-
-
-// const CompleteAppointment = async (appointmentId) =>{
-//     try {
-//         const data  = await axios.post(backendUrl+'/api/admin/complete-appointment', {appointmentId}, {headers:{atoken} }); 
-
-//         if (data.success) {
-//             toast.success(data.message)
-//             getAllAppointments()
-//         }
-//     } catch (error) {
-//         console.log(error)
-//         toast.error(error.message)
-//     }
-// }
-
-
-
-//API to make payment of appointment using razorpay
-
-// const appointmentComplete = async (req, res) =>{
-//     try {
-//       const {docId,appointmentId }= req.body
-//       const appointmentData = await appointmentModel.findById(appointmentId)
-      
-//       if (appointmentData && appointmentData.docId === docId) {
-           
-//         await appointmentModel.findByIdAndUpdate(appointmentId, {isCompleted: true})
-//         return res.json({success:true, message:'Appoitnmemnt Completed'})
-  
-//       } else {
-//         return res.json({success:false, message:'Mark Failed'})
-//       }
-      
-//     } catch (error) {
-//       console.log(error)
-//       res.json({success:false, message:error.message})
-//     }
-//   }
-
-
-
-
 const paymentPhonePe = async (req, res) => {
     try {
-      const { appointmentId } = req.body;
+      const { appointmentId,transactionId, MUID } = req.body;
       const appointmentData = await appointmentModel.findById(appointmentId);
-      console.log('appointmentData for proceeding payment', appointmentData);
+    //   console.log('appointmentData for proceeding payment', appointmentData);
   
       if (!appointmentData || appointmentData.cancelled) {
         return res.json({ success: false, message: "Appointment Cancelled or not found" });
       }
-  
-      // Payment data for PhonePe (mock example)
-      const paymentData = {
-        amount: appointmentData.amount,
-        currency: 'INR', // or use your currency
-        receipt: appointmentId,
-        // Add more fields if required by PhonePe API
+
+    const data = {
+      merchantId: merchant_id,
+      merchantTransactionId: transactionId,
+      amount: appointmentData.amount*100,
+      // redirectUrl: `http://localhost:5000/status?id=${transactionId}`,
+      redirectUrl: `http://localhost:5000/api/user/status?id=${transactionId}&appointmentId=${appointmentId}`,
+      redirectMode: "POST",
+      paymentInstrument: {
+        type: "PAY_PAGE",
+      },
       };
-      console.log('proceding towards order creation...')
-  
-      // Call to PhonePe API to create an order
-      const response = await axios.post('https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay', paymentData);
-  
-      if (!response) return;
 
-      if (response.data.success) {
-        // Extract the redirect URL from PhonePe's response
-        const { redirectUrl } = response.data;
-        res.json({ success: true, redirectUrl:"http://localhost:5173/my-appointment" });
-      } else {
-        res.json({ success: false, message: "PhonePe payment initiation failed" });
-      }
-    } catch (error) {
-      console.log(error);
-      res.json({ success: false, message: error.message });
+    const KeyIndex =1
+
+    // Base64 encode the payload
+    const payload = JSON.stringify(data)
+    const payloadMain = Buffer.from(payload).toString("base64");
+
+    // Generate X-VERIFY checksum
+    const string = payloadMain + "/pg/v1/pay" + salt_key;
+    const sha256 = crypto.createHash('sha256').update(string).digest('hex')
+    const checksum = sha256+ '###' + KeyIndex
+ 
+  // const prod_URL = "http://api.phonepe.com/api/hermes/pg/v1/pay" // if you are live
+  const prod_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay"
+
+  const option = {
+    method: 'POST',
+    url:prod_URL,
+    headers: {
+        accept : 'application/json',
+        'Content-Type': 'application/json',
+        'X-VERIFY': checksum
+    },
+    data :{
+        request : payloadMain
     }
-  };
+  }
+
+      // Call to PhonePe API to create an order
+    axios
+    .request(option)
+    .then( async(response)=> {
+      // console.log('response.data in paymentphonepe ......',response.data)
+
+      res.json(response.data)
+      await paymentstatus(req,res);   
+    
+    })
+    .catch(function (error) {
+      console.error(error.message);
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+
+  const paymentstatus= async (req, res) => {
+    console.log('enter in payment status')
+    const merchantTransactionId = req.query.id;
+    const merchantId = merchant_id
+   const appointmentId  = req.query.appointmentId
+
+const successUrl="http://localhost:5173/about"
+const failureUrl="http://localhost:5173/contact"
+
+  const keyIndex = 1
+  const string  = `/pg/v1/status/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}` + process.env.PHONEPE_MERCHANT_KEY
+  const sha256 = crypto.createHash('sha256').update(string).digest('hex')
+  const checksum = sha256 + '###' + keyIndex
+
+  const prod_URL_status = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status"
+  const option = {
+      method: 'GET',
+      url:`${prod_URL_status}/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}`,
+      headers: {
+          accept : 'application/json',
+          'Content-Type': 'application/json',
+          'X-VERIFY': checksum,
+          'X-MERCHANT-ID': process.env.PHONEPE_MERCHANT_ID
+      },
+  }
+
+  await axios(option).then(async (response) => {
+
+    if (response.data.success){
+      console.log("Appointment not found.");
+         
+  await verifyPhonePePayment (response.data,appointmentId)
+      // res.json({message: "payment successfull", data: response.data}) //black page crome
+         res.redirect("http://localhost:5173/my-appointment")
+
+    }else{
+        return res.redirect("http://localhost:5173/contact")
+    }
+  })
+  .catch((error) => {
+    console.error("Error fetching payment status:", error.message);
+    res.redirect("http://localhost:5173/contact"); // Failure URL
+  });
+};
 
 
-const verifyPhonePePayment = async (req, res) => {
+const verifyPhonePePayment = async (responseData, appointmentId) => {
     try {
-      const { paymentId, orderId, status } = req.body; // Fields may vary based on PhonePe API
-      if (status === 'paid') {
-        // Update the appointment with payment success
-        await appointmentModel.findByIdAndUpdate({ _id: orderId }, { payment: true });
-        res.json({ success: true, message: "Payment Successful" });
+      
+      // const { paymentId, orderId, state } = req.body; 
+      const state = responseData.data.state
+
+      console.log('responseData in verifypayment......',responseData)
+        if (state === 'COMPLETED') {
+
+        const appointmentData = await appointmentModel.findById(appointmentId);
+          if (appointmentData) {
+            await appointmentModel.findByIdAndUpdate(appointmentId, { payment: true });
+            // console.log(`Appointment with ID ${appointmentId} marked as Paid.`);
+          } else {
+            console.log("Appointment not found.");
+          }
+        // res.json({ success: true, message: "Payment Successful" });
+
       } else {
         res.json({ success: false, message: "Payment failed" });
       }
@@ -319,4 +369,4 @@ const verifyPhonePePayment = async (req, res) => {
 
 export {registerUser, loginUser, getProfile, updateProfile,
     bookAppointment, listAppointment, cancelAppointment,
-    paymentPhonePe, verifyPhonePePayment }
+    paymentPhonePe, verifyPhonePePayment, paymentstatus }
