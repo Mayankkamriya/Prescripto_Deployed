@@ -294,7 +294,7 @@ const paymentPhonePe = async (req, res) => {
 };
 
   const paymentstatus= async (req, res) => {
-    console.log('enter in payment status')
+
     const merchantTransactionId = req.query.id;
     const merchantId = merchant_id
    const appointmentId  = req.query.appointmentId
@@ -322,7 +322,6 @@ const failureUrl="http://localhost:5173/contact"
   await axios(option).then(async (response) => {
 
     if (response.data.success){
-      console.log("Appointment not found.");
          
   await verifyPhonePePayment (response.data,appointmentId)
       // res.json({message: "payment successfull", data: response.data}) //black page crome
