@@ -6,6 +6,7 @@ import  cloudinary from '../config/cloudinary.js'
 import jwt from 'jsonwebtoken';
 import axios from 'axios'
 import crypto from 'crypto'
+import validator from 'validator'
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000' ;
 
@@ -89,6 +90,7 @@ const getProfile = async (req,res)=>{
 
 // API to update user profile
  const updateProfile = async (req,res)=>{
+  console.log('cloudinary.....',cloudinary);
     try {
         const {userId, name, phone, address, dob, gender } = req.body
         const imageFile = req.file
