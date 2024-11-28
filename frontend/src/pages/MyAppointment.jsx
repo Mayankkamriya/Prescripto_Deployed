@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom'
 const MyAppointment = () => {
   const { token, getUserAppointments, appointments, cancelAppointment  } = useContext(AppContext)
 
+  const backendurl = import.meta.env.VITE_BACKEND_URL
+  
   // const [appointments, setAppointments] = useState([])
   const months= ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Srp", "Oct", "Nov", "Dec"]
 
@@ -24,7 +26,7 @@ const MyAppointment = () => {
     transactionId: "T" + Date.now(),
   }
   try {
-    const response = await axios.post('http://localhost:5000/api/user/create-order', data, {headers:{token}})
+    const response = await axios.post( backendurl + '/api/user/create-order', data, {headers:{token}})
 
     if (response.data && response.data.data.instrumentResponse.redirectInfo.url) {
         window.location.href= response.data.data.instrumentResponse.redirectInfo.url;

@@ -3,10 +3,11 @@ import userModel from '../models/userModel.js'
 import doctorModel from '../models/doctorModel.js'
 import appointmentModel from '../models/appointmentModel.js'
 import  cloudinary from '../config/cloudinary.js'
-// import jwt from "jsonwebtoken";
 import jwt from 'jsonwebtoken';
 import axios from 'axios'
 import crypto from 'crypto'
+
+const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000' ;
 
 //API to register user 
 const registerUser = async (req,res) =>{
@@ -240,7 +241,7 @@ const paymentPhonePe = async (req, res) => {
       merchantTransactionId: transactionId,
       amount: appointmentData.amount*100,
       // redirectUrl: `http://localhost:5000/status?id=${transactionId}`,
-      redirectUrl: `http://localhost:5000/api/user/status?id=${transactionId}&appointmentId=${appointmentId}`,
+      redirectUrl: `${backendUrl}/api/user/status?id=${transactionId}&appointmentId=${appointmentId}`,
       redirectMode: "POST",
       paymentInstrument: {
         type: "PAY_PAGE",
@@ -259,7 +260,9 @@ const paymentPhonePe = async (req, res) => {
     const checksum = sha256+ '###' + KeyIndex
  
   // const prod_URL = "http://api.phonepe.com/api/hermes/pg/v1/pay" // if you are live
-  const prod_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay"
+  // const prod_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay"
+  const prod_URL = process.env.REACT_APP_API_URL || 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay'
+console.log('process.env.REACT_APP_API_URL.....', process.env.REACT_APP_API_URL)
 
   const option = {
     method: 'POST',
@@ -299,7 +302,7 @@ const paymentPhonePe = async (req, res) => {
     const merchantId = merchant_id
    const appointmentId  = req.query.appointmentId
 
-const successUrl="http://localhost:5173/about"
+const successUrl="http://localhost:5173/my-appointment"
 const failureUrl="http://localhost:5173/contact"
 
   const keyIndex = 1
