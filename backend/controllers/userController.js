@@ -308,19 +308,19 @@ const successUrl="http://localhost:5173/my-appointment"
 const failureUrl="http://localhost:5173/contact"
 
   const keyIndex = 1
-  const string  = `/pg/v1/status/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}` + process.env.PHONEPE_MERCHANT_KEY
+  const string  = `/pg/v1/status/${merchantId}/${merchantTransactionId}` + process.env.PHONEPE_MERCHANT_KEY
   const sha256 = crypto.createHash('sha256').update(string).digest('hex')
   const checksum = sha256 + '###' + keyIndex
 
   const prod_URL_status = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status"
   const option = {
       method: 'GET',
-      url:`${prod_URL_status}/${process.env.PHONEPE_MERCHANT_ID}/${merchantTransactionId}`,
+      url:`${prod_URL_status}/${merchantId}/${merchantTransactionId}`,
       headers: {
           accept : 'application/json',
           'Content-Type': 'application/json',
           'X-VERIFY': checksum,
-          'X-MERCHANT-ID': process.env.PHONEPE_MERCHANT_ID
+          'X-MERCHANT-ID': merchantId 
       },
   }
 
@@ -330,7 +330,20 @@ const failureUrl="http://localhost:5173/contact"
          
   await verifyPhonePePayment (response.data,appointmentId)
       // res.json({message: "payment successfull", data: response.data}) //black page crome
-         res.redirect("http://localhost:5173/my-appointment")
+      
+      console.log('response.data....',response.data)
+      const paymentDetails = {
+        transactionId: response.data.data.transactionId || "N/A",
+        amount: response.data.data.amount/100 || 0, // Convert if necessary
+        success: response.data.data.state === "COMPLETED" || "FAILED",
+        appointmentId: appointmentId,
+        date: new Date().toLocaleString(),
+      };
+      // const paymentDetails = encodeURIComponent(JSON.stringify(response.data));
+      // console.log('paymentDetails....',paymentDetails)
+
+      res.redirect(`http://localhost:5173/my-appointment?paymentDetails=${encodeURIComponent(JSON.stringify(paymentDetails))}`);
+      // res.redirect("http://localhost:5173/my-appointment")
 
     }else{
         return res.redirect("http://localhost:5173/contact")

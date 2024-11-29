@@ -3,10 +3,12 @@ import Appointment from './Appointment.jsx'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const MyAppointment = () => {
   const { token, getUserAppointments, appointments, cancelAppointment  } = useContext(AppContext)
+  const [paymentDetails, setPaymentDetails] = useState(null); 
+  const [visibleAppointmentId, setVisibleAppointmentId] = useState(null);
 
   const backendurl = import.meta.env.VITE_BACKEND_URL
   
@@ -14,7 +16,7 @@ const MyAppointment = () => {
   const months= ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Srp", "Oct", "Nov", "Dec"]
 
  const navigate = useNavigate()
-
+ const location = useLocation();
 
  const handlePayment = async (amount,id) =>{
   const data = {
@@ -33,14 +35,10 @@ const MyAppointment = () => {
         console.log('Api Response Infrontend  ....',response.data)
       }
 
-
-    // if (!response) return;
-    
-    console.log('response.data in frontend  ....',response.data)
     if (response.success) {
       console.log('response.success')
     }
-    // window.location.href = response.data.url
+
   } catch (error) {
     console.log("error in payment", error)
   }
@@ -93,25 +91,6 @@ const MyAppointment = () => {
 // };
 
 
-
-// const appointmentPhonePe = async (appointmentId) => {
-//   try {
-//     const { data } = await axios.post( backendUrl + '/api/user/payment-phonepe', {appointmentId }, { headers:{token}});
-//     console.log("API Response....: ", data); 
-
-//     if (data.success) {
-//       // Initiate payment with PhonePe order details
-//       console.log('PhonePe order data:', data.order);
-//       initPhonePePay(data.order);
-//     } else {
-//       console.error('PhonePe payment initiation failed.');
-//     }
-//   } catch (error) {
-//     console.error('Error in PhonePe payment request:', error);
-//   }
-// };
-
-
 // const appointmentRozarpay = async (appointmentId) =>{
 //   try {
 //     const {data} = await axios.post(backendUrl + '/api/user/payment-razorpay', {appointmentId},{headers: {token}})
@@ -130,10 +109,26 @@ const MyAppointment = () => {
 
 
 useEffect(()=>{
+  const searchParams = new URLSearchParams(location.search);
+  const details = searchParams.get('paymentDetails');
+ 
+  if (details) {
+    setPaymentDetails(JSON.parse(decodeURIComponent(details))); // Parse and storing payment details
+  
+  }
   if (token) {
     getUserAppointments()
   }
-},[token])
+},[token, location.search])
+
+const togglePaymentDetails = (appointmentId) => {
+
+  if (visibleAppointmentId === appointmentId) {
+    setVisibleAppointmentId(null); // Hiding payment details if it already visible
+  } else {
+    setVisibleAppointmentId(appointmentId); // Showing payment details for the clicked appointment
+  }
+};
 
   return (
     <div>
@@ -154,10 +149,37 @@ useEffect(()=>{
             <p className='text-xs mt-1'><span className='text-sm text-neutral-700 font-medium'>Date & Time:</span>  {slotDateFormat(item.slotDate)} | {item.slotTime} </p>
           </div>
           <div></div>
+          
           <div className='flex flex-col gap-2 justify-end'>
-            { item.payment && !item.isCompleted && <button className='sm:min-w-48 py-2 border rounded text-stone-500 bg-indigo-50 '>Paid</button> }
+            { item.payment && !item.isCompleted && <button className='sm:min-w-48 py-2 border rounded text-stone-500 bg-indigo-100 '>Paid</button> }
             {!item.cancelled && !item.payment && !item.isCompleted && <button onClick={() => handlePayment(item.amount*100,item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button> } 
-                        
+
+            {/* Toggle Button */}
+            {item.payment && visibleAppointmentId !== item._id && (
+            <button onClick={() => togglePaymentDetails(item._id)} className="sm:min-w-48 border bg-indigo-50 text-stone-500 px-4 py-2 rounded">
+              Show Payment Details </button>
+            )}
+
+            {/* Display Payment Details if Show Button is Clicked */}
+            { item.payment && visibleAppointmentId === item._id  && (
+            <div className="bg-gray-100 p-4 rounded mt-4 relative">
+               {/* <p className="font-medium text-sm text-zinc-700">Payment Details:</p> */}
+              <h3 className="text-lg font-bold text-center">Payment Details</h3>
+              <p> <strong>Transaction ID:</strong>   { paymentDetails?.transactionId}</p>
+              <p> <strong> Amount: </strong> ₹ { paymentDetails?.amount }</p>
+              <p> <strong> Status: </strong> { paymentDetails?.success ? 'Success' : 'Failed'}
+              <p> <strong>Appointment ID:</strong>   { paymentDetails?.appointmentId}</p>
+              <p><strong>Payment Date:</strong> {paymentDetails?.date}</p> 
+              </p>
+
+              {/* Close Icon */}
+              <button onClick={() => togglePaymentDetails(item._id)}
+                className="absolute top-2 right-2 text-gray-500 hover:text-black"
+              > ✖ </button> </div>
+          )}
+
+
+
             {/* {!item.cancelled && !item.payment && <button onClick={()=>appointmentPhonePe(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-primary hover:text-white transition-all duration-300'>Pay Online</button> } */}
 
             {!item.cancelled && !item.isCompleted && <button onClick={() => cancelAppointment(item._id)} className='text-sm text-stone-500 text-center sm:min-w-48 py-2 border rounded hover:bg-red-600 hover:text-white transition-all duration-300'>cancel appointment</button> }
