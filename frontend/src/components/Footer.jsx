@@ -1,15 +1,26 @@
 import React from 'react'
 import { assets } from '../assets/assets'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate  } from 'react-router-dom'
 
 const Footer = () => {
+
+    const handleClick = () => {
+
+        navigate('/');
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth', // For smooth scrolling
+          });
+    }
+
+    const navigate = useNavigate()
   return (
     <div className='md:mx-10'>
         <div className='flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14 my-10 mt-30 text-sm'>
         {/*--------------- Left side ----------------*/}
         <div>
 
-            <img className='mb-5 w-40' src={assets.logo} alt="" />
+            <img onClick={handleClick} className='mb-5 w-40 cursor-pointer transition-opacity duration-1500 hover:opacity-80 ' src={assets.logo} alt="" />
             <p className='w-full md:w-1/2 text-gray-600 leading-6'>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
 
         </div>
@@ -19,9 +30,9 @@ const Footer = () => {
             <p className='text-xl font-medium mb-5' >COMPANY</p>
             <ul className='flex flex-col gap-2 text-gray-600'>
 
-            <li className="hover:text-black" > <NavLink onClick={()=>scrollTo(0,0)} to='/'> HOME </NavLink></li>
-            <li className="hover:text-black" > <NavLink onClick={()=>scrollTo(0,0)} to='/about'> ABOUT US </NavLink></li>
-            <li className="hover:text-black" > <NavLink onClick={()=>scrollTo(0,0)} to='/contact'> CONTACT US </NavLink></li>                   
+            <li className="hover:text-black" > <NavLink onClick={()=> window.scrollTo({top: 0, behavior: 'smooth' } )} to='/'> HOME </NavLink></li>
+            <li className="hover:text-black" > <NavLink onClick={()=> window.scrollTo({top: 0, behavior: 'smooth' } )} to='/about'> ABOUT US </NavLink></li>
+            <li className="hover:text-black" > <NavLink onClick={()=> window.scrollTo({top: 0, behavior: 'smooth' } )} to='/contact'> CONTACT US </NavLink></li>                   
             <li>PRIVACY & POLICY</li>
 
             </ul>

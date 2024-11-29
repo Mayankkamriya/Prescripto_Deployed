@@ -34,7 +34,7 @@ const Doctor = () => {
         <p onClick={()=>{ if( speciality != 'Neurologist') {navigate('/doctors/Neurologist')  }}} className={` w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "Neurologist" ? "bg-indigo-100 text-black" : ""  }  `} >Neurologist</p>
         <p onClick={()=>{ if( speciality != 'Gastroenterologist') {navigate('/doctors/Gastroenterologist')  }}} className={` w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "Gastroenterologist" ? "bg-indigo-100 text-black" : ""  }  `} >Gastroenterologist</p>
       </div>
-      <div className='w-full grid grid-cols-5 gap-4 gap-y-6'>
+      <div className='w-full grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 gap-y-6'>
         {
           filterDoc.map((item,index)=>( 
             <div onClick={()=> navigate(`/my-appointment/${item._id}`)} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] tranition-all duration-500' key={index}>

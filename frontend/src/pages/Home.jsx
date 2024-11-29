@@ -5,12 +5,14 @@ import TopDoctors from '../components/TopDoctors'
 import Banner from '../components/Banner'
 
 const Home = () => {
+
+  const isLoggedIn = localStorage.getItem('token');
   return (
     <div>
     <Header/>
     <SpecialityMenu/>
     <TopDoctors/>
-    <Banner/>
+    { !isLoggedIn && <Banner/> }
   </div>
   )
 }

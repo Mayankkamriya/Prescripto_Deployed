@@ -86,7 +86,7 @@ const bookAppointment = async () =>{
   }
 
   try {
-    window.scrollTo(0, 0);
+    window.scrollTo({top: 0, behavior: 'smooth', })
     const date = docSlots[slotIndex][0].datetime
     
     let day = date.getDate()
