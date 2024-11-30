@@ -12,6 +12,9 @@ import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import 'dotenv/config';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 // app config
 const app = express()
 const port = process.env.PORT || 5000

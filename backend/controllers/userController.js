@@ -8,7 +8,7 @@ import axios from 'axios'
 import crypto from 'crypto'
 import validator from 'validator'
 
-const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000' ;
+const backendUrl = process.env.VITE_BACKEND_URL || 'http://localhost:5000' ;
 
 //API to register user 
 const registerUser = async (req,res) =>{
@@ -263,8 +263,13 @@ const paymentPhonePe = async (req, res) => {
  
   // const prod_URL = "http://api.phonepe.com/api/hermes/pg/v1/pay" // if you are live
   // const prod_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay"
-  const prod_URL = process.env.REACT_APP_API_URL || 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay'
-console.log('process.env.REACT_APP_API_URL.....', process.env.REACT_APP_API_URL)
+  const prod_URL = process.env.VITE_API_URL || 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay'
+
+  console.log('backendUrl.....',backendUrl)
+  console.log('process.env.VITE_BACKEND_URL.....',process.env.VITE_BACKEND_URL)
+  console.log('salt_key.....',salt_key)
+  console.log('merchant_id.....',merchant_id)
+  console.log('process.env.VITE_API_URL.....', process.env.VITE_API_URL)
 
   const option = {
     method: 'POST',
@@ -339,6 +344,12 @@ const failureUrl="http://localhost:5173/contact"
         appointmentId: appointmentId,
         date: new Date().toLocaleString(),
       };
+
+  //      // Update appointment with payment details
+  // await appointmentModel.findByIdAndUpdate(appointmentId, {
+  //   paymentDetails,
+  // });
+  
       // const paymentDetails = encodeURIComponent(JSON.stringify(response.data));
       // console.log('paymentDetails....',paymentDetails)
 

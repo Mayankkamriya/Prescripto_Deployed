@@ -104,8 +104,11 @@ const bookAppointment = async () =>{
       getDoctorsData()
 
     } else {
+      if (!slotTime) {
+        toast.warning('Select Slot Time')
+      } else{
       console.log('data.success is false')
-      toast.error(data.message)
+      toast.error(data.message)}
     }
 
   } catch (error) {
