@@ -243,7 +243,7 @@ const paymentPhonePe = async (req, res) => {
       merchantTransactionId: transactionId,
       amount: appointmentData.amount*100,
       // redirectUrl: `http://localhost:5000/status?id=${transactionId}`,
-      redirectUrl: `${backendUrl}/api/user/status?id=${transactionId}&appointmentId=${appointmentId}`,
+      redirectUrl: `https://prescriptogit-backend.onrender.com/api/user/status?id=${transactionId}&appointmentId=${appointmentId}`,
       redirectMode: "POST",
       paymentInstrument: {
         type: "PAY_PAGE",
