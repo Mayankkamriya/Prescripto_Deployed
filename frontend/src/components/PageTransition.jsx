@@ -12,7 +12,7 @@ const PageTransition = ({ children }) => {
       <CSSTransition
         key={location.pathname}
         classNames="fade"
-        timeout={400} // Duration of the animation
+        timeout={300} // Duration of the animation
         unmountOnExit
       >
         {children}

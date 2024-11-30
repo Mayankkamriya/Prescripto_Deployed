@@ -15,12 +15,14 @@ const [doctorsToShow, setDoctorsToShow] = useState([]);
 
 
 useEffect(() => {
-    // setTimeout(() => {
-      const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 6) : doctors.slice(0, 10);
+    setTimeout(() => {
+      const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 0) : doctors.slice(0, 10);
 
       setDoctorsToShow(doctorsSubset);
-      setLoading(false);
-    // }, 500); // Simulate a 500-milisecond delay for data fetching
+      if (doctorsSubset) {
+          setLoading(false);
+      }
+    }, 300); // Simulate a 500-milisecond delay for data fetching
   }, [doctors]);
 
   return (

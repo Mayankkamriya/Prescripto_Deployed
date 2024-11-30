@@ -1,10 +1,12 @@
 import React, { useEffect,useContext, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
+import Loader from '../components/Loader.jsx'
 
 const Doctor = () => {
   const {speciality} = useParams()
   const [filterDoc, setFilterDoc ]= useState([])
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate()
   const {doctors} = useContext(AppContext)
 
@@ -16,6 +18,16 @@ const Doctor = () => {
       setFilterDoc(doctors)
     }
   }
+
+
+  if(doctors.length>0){
+    console.log('doctors.length>0....')
+  
+    setTimeout(() => {
+        setLoading(false);
+    }, 400);
+  }
+
 
   useEffect(()=>{
     applyFilter()
@@ -35,7 +47,14 @@ const Doctor = () => {
         <p onClick={()=>{ if( speciality != 'Gastroenterologist') {navigate('/doctors/Gastroenterologist')  }}} className={` w-[94vw] sm:w-auto pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "Gastroenterologist" ? "bg-indigo-100 text-black" : ""  }  `} >Gastroenterologist</p>
       </div>
       <div className='w-full grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 gap-y-6'>
-        {
+        
+      {
+      loading ? (
+        <div className='flex justify-center items-center h-96'>
+                    <Loader/>
+                </div>
+            ) : ( 
+        
           filterDoc.map((item,index)=>( 
             <div onClick={()=> navigate(`/my-appointment/${item._id}`)} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] tranition-all duration-500' key={index}>
             {/* <div onClick={()=> navigate(`/Appointment/${item._id}`)} className='border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] tranition-all duration-500' key={index}> */}
@@ -50,7 +69,7 @@ const Doctor = () => {
                 <p className='text-gray-600 text-sm'>{item.speciality}</p>
                 </div>
             </div>
-            ))
+            )))
         }
       </div>
 

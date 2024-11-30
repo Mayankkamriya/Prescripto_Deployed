@@ -4,11 +4,13 @@ import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useNavigate, useLocation } from 'react-router-dom'
+import Loader from '../components/Loader.jsx'
 
 const MyAppointment = () => {
   const { token, getUserAppointments, appointments, cancelAppointment  } = useContext(AppContext)
   const [paymentDetails, setPaymentDetails] = useState(null); 
   const [visibleAppointmentId, setVisibleAppointmentId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const backendurl = import.meta.env.VITE_BACKEND_URL
   
@@ -42,6 +44,20 @@ const MyAppointment = () => {
   } catch (error) {
     console.log("error in payment", error)
   }
+}
+
+
+if(appointments.length>0){
+  // console.log('appointments.length>0....')
+
+  setTimeout(() => {
+    // const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 0) : doctors.slice(0, 10);
+
+    // setDoctorsToShow(doctorsSubset);
+    // if (doctorsSubset) {
+        setLoading(false);
+    // }
+  }, 400);
 }
 
   const slotDateFormat = (slotDate)=> {
@@ -111,7 +127,7 @@ const MyAppointment = () => {
 useEffect(()=>{
   const searchParams = new URLSearchParams(location.search);
   const details = searchParams.get('paymentDetails');
- 
+ console.log('details....',details)
   if (details) {
     setPaymentDetails(JSON.parse(decodeURIComponent(details))); // Parse and storing payment details
   
@@ -133,8 +149,17 @@ const togglePaymentDetails = (appointmentId) => {
   return (
     <div>
     <p className='pb-3 mt-12 font-medium text-zinc-700 border-b'>MyAppointment</p>
+
     <div>
-      {appointments.map((item,index) => {
+    {
+      loading ? (
+        <div className='flex justify-center items-center h-96'>
+                    <Loader/>
+                </div>
+            ) : (       
+              
+      // {
+        appointments.map((item,index) => {
         return (
         <div className='grid grid-cols-[1fr_2fr] gap-4 sm:flex sm:gap-6 py-2 border-b' key={index}>
           <div>
@@ -189,7 +214,9 @@ const togglePaymentDetails = (appointmentId) => {
           </div>
         </div>
       )
-      })}
+      })
+    //}
+    )}
     </div>
 
 
