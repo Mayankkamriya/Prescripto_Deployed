@@ -238,12 +238,13 @@ const paymentPhonePe = async (req, res) => {
         return res.json({ success: false, message: "Appointment Cancelled or not found" });
       }
 
+      const  redirectUrl = process.env.VITE_BACKEND_URL
     const data = {
       merchantId: merchant_id,
       merchantTransactionId: transactionId,
       amount: appointmentData.amount*100,
       // redirectUrl: `http://localhost:5000/status?id=${transactionId}`,
-      redirectUrl: `https://prescriptogit-backend.onrender.com/api/user/status?id=${transactionId}&appointmentId=${appointmentId}`,
+      redirectUrl: `${redirectUrl}/api/user/status?id=${transactionId}&appointmentId=${appointmentId}`,
       redirectMode: "POST",
       paymentInstrument: {
         type: "PAY_PAGE",
@@ -261,14 +262,10 @@ const paymentPhonePe = async (req, res) => {
     const sha256 = crypto.createHash('sha256').update(string).digest('hex')
     const checksum = sha256+ '###' + KeyIndex
  
-  // const prod_URL = "http://api.phonepe.com/api/hermes/pg/v1/pay" // if you are live
-  // const prod_URL = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay"
-  const prod_URL = process.env.VITE_API_URL || 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay'
+  const prod_URL = process.env.VITE_API_URL 
 
-  console.log('backendUrl.....',backendUrl)
+  // console.log('backendUrl.....',backendUrl)
   console.log('process.env.VITE_BACKEND_URL.....',process.env.VITE_BACKEND_URL)
-  console.log('salt_key.....',salt_key)
-  console.log('merchant_id.....',merchant_id)
   console.log('process.env.VITE_API_URL.....', process.env.VITE_API_URL)
 
   const option = {
@@ -317,7 +314,7 @@ const failureUrl="http://localhost:5173/contact"
   const sha256 = crypto.createHash('sha256').update(string).digest('hex')
   const checksum = sha256 + '###' + keyIndex
 
-  const prod_URL_status = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status"
+  const prod_URL_status = process.env.VITE_API_URL
   const option = {
       method: 'GET',
       url:`${prod_URL_status}/${merchantId}/${merchantTransactionId}`,
@@ -352,12 +349,13 @@ const failureUrl="http://localhost:5173/contact"
   
       // const paymentDetails = encodeURIComponent(JSON.stringify(response.data));
       // console.log('paymentDetails....',paymentDetails)
-
-      res.redirect(`http://localhost:5173/my-appointment?paymentDetails=${encodeURIComponent(JSON.stringify(paymentDetails))}`);
+      const successredirecturl = process.env.VITE_FRONTEND_URL
+      res.redirect(`${successredirecturl}/my-appointment?paymentDetails=${encodeURIComponent(JSON.stringify(paymentDetails))}`);
       // res.redirect("http://localhost:5173/my-appointment")
 
     }else{
-        return res.redirect("http://localhost:5173/contact")
+      const successredirecturl = process.env.VITE_FRONTEND_URL
+        return res.redirect(`${successredirecturl}/contact`)
     }
   })
   .catch((error) => {
