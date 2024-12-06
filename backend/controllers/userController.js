@@ -232,7 +232,6 @@ const paymentPhonePe = async (req, res) => {
     try {
       const { appointmentId,transactionId, MUID } = req.body;
       const appointmentData = await appointmentModel.findById(appointmentId);
-    //   console.log('appointmentData for proceeding payment', appointmentData);
   
       if (!appointmentData || appointmentData.cancelled) {
         return res.json({ success: false, message: "Appointment Cancelled or not found" });
@@ -243,7 +242,6 @@ const paymentPhonePe = async (req, res) => {
       merchantId: merchant_id,
       merchantTransactionId: transactionId,
       amount: appointmentData.amount*100,
-      // redirectUrl: `http://localhost:5000/status?id=${transactionId}`,
       redirectUrl: `${redirectUrl}/api/user/status?id=${transactionId}&appointmentId=${appointmentId}`,
       redirectMode: "POST",
       paymentInstrument: {
@@ -262,11 +260,7 @@ const paymentPhonePe = async (req, res) => {
     const sha256 = crypto.createHash('sha256').update(string).digest('hex')
     const checksum = sha256+ '###' + KeyIndex
  
-  const prod_URL = process.env.VITE_API_URL 
-
-  // console.log('backendUrl.....',backendUrl)
-  console.log('process.env.VITE_BACKEND_URL.....',process.env.VITE_BACKEND_URL)
-  console.log('process.env.VITE_API_URL.....', process.env.VITE_API_URL)
+  const prod_URL = `${process.env.VITE_PHONEPE_URL}/pay`;
 
   const option = {
     method: 'POST',
@@ -284,12 +278,9 @@ const paymentPhonePe = async (req, res) => {
       // Call to PhonePe API to create an order
     axios
     .request(option)
-    .then( async(response)=> {
-      // console.log('response.data in paymentphonepe ......',response.data)
-
+    .then( async(response)=> {  
       res.json(response.data)
-      await paymentstatus(req,res);   
-    
+
     })
     .catch(function (error) {
       console.error(error.message);
@@ -300,11 +291,12 @@ const paymentPhonePe = async (req, res) => {
   }
 };
 
-  const paymentstatus= async (req, res) => {
+const paymentstatus= async (req, res) => {
 
-    const merchantTransactionId = req.query.id;
-    const merchantId = merchant_id
-   const appointmentId  = req.query.appointmentId
+try{
+      const merchantTransactionId = req.query.id;
+      const merchantId = merchant_id
+     const appointmentId  = req.query.appointmentId
 
 const successUrl="http://localhost:5173/my-appointment"
 const failureUrl="http://localhost:5173/contact"
@@ -314,23 +306,22 @@ const failureUrl="http://localhost:5173/contact"
   const sha256 = crypto.createHash('sha256').update(string).digest('hex')
   const checksum = sha256 + '###' + keyIndex
 
-  const prod_URL_status = process.env.VITE_API_URL
+  const prod_URL_status = `${process.env.VITE_PHONEPE_URL}/status`;
   const option = {
       method: 'GET',
       url:`${prod_URL_status}/${merchantId}/${merchantTransactionId}`,
       headers: {
-          accept : 'application/json',
+          'accept' : 'application/json',
           'Content-Type': 'application/json',
           'X-VERIFY': checksum,
           'X-MERCHANT-ID': merchantId 
       },
   }
 
-  await axios(option).then(async (response) => {
+const response = await axios(option)
 
     if (response.data.success){
          
-  await verifyPhonePePayment (response.data,appointmentId)
       // res.json({message: "payment successfull", data: response.data}) //black page crome
       
       console.log('response.data....',response.data)
@@ -342,26 +333,27 @@ const failureUrl="http://localhost:5173/contact"
         date: new Date().toLocaleString(),
       };
 
-  //      // Update appointment with payment details
-  // await appointmentModel.findByIdAndUpdate(appointmentId, {
-  //   paymentDetails,
-  // });
+//   //      // Update appointment with payment details
+//   // await appointmentModel.findByIdAndUpdate(appointmentId, {
+//   //   paymentDetails,
+//   // });
   
-      // const paymentDetails = encodeURIComponent(JSON.stringify(response.data));
-      // console.log('paymentDetails....',paymentDetails)
+//       // const paymentDetails = encodeURIComponent(JSON.stringify(response.data));
+//       // console.log('paymentDetails....',paymentDetails)
+
+await verifyPhonePePayment (response.data,appointmentId)
       const successredirecturl = process.env.VITE_FRONTEND_URL
       res.redirect(`${successredirecturl}/my-appointment?paymentDetails=${encodeURIComponent(JSON.stringify(paymentDetails))}`);
-      // res.redirect("http://localhost:5173/my-appointment")
 
     }else{
       const successredirecturl = process.env.VITE_FRONTEND_URL
-        return res.redirect(`${successredirecturl}/contact`)
+        return res.redirect(`${successredirecturl}/`)
     }
-  })
-  .catch((error) => {
-    console.error("Error fetching payment status:", error.message);
-    res.redirect("http://localhost:5173/contact"); // Failure URL
-  });
+
+} catch (error){
+  console.log('error in /status route',error)
+}
+
 };
 
 
@@ -384,11 +376,11 @@ const verifyPhonePePayment = async (responseData, appointmentId) => {
         // res.json({ success: true, message: "Payment Successful" });
 
       } else {
-        res.json({ success: false, message: "Payment failed" });
+        // res.json({ success: false, message: "Payment failed" });
       }
     } catch (error) {
       console.log(error);
-      res.json({ success: false, message: error.message });
+      // res.json({ success: false, message: error.message });
     }
   };
 
