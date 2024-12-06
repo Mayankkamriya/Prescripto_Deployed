@@ -10,19 +10,13 @@ const navigate = useNavigate()
 const [loading, setLoading] = useState(true);
 const [doctorsToShow, setDoctorsToShow] = useState([]);
 
- // Determine the number of doctors to display based on screen size
-//  const doctorsToShow = window.innerWidth < 640 ? doctors.slice(0, 6) : doctors.slice(0, 10);
-
-
 useEffect(() => {
     setTimeout(() => {
       const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 0) : doctors.slice(0, 10);
 
       setDoctorsToShow(doctorsSubset);
-      if (doctorsSubset) {
           setLoading(false);
-      }
-    }, 300); // Simulate a 500-milisecond delay for data fetching
+    }, 400);
   }, [doctors]);
 
   return (

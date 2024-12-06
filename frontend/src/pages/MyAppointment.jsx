@@ -38,6 +38,7 @@ const MyAppointment = () => {
       }
 
     if (response.success) {
+      toast.success('Payment is successful')
       console.log('response.success')
     }
 
@@ -46,17 +47,10 @@ const MyAppointment = () => {
   }
 }
 
-
 if(appointments.length>0){
-  // console.log('appointments.length>0....')
 
   setTimeout(() => {
-    // const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 0) : doctors.slice(0, 10);
-
-    // setDoctorsToShow(doctorsSubset);
-    // if (doctorsSubset) {
         setLoading(false);
-    // }
   }, 400);
 }
 
