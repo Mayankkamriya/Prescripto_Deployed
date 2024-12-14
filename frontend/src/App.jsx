@@ -13,7 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import React from 'react';
 import Appointment from './pages/Appointment'
 import PageTransition from './components/PageTransition'
-
+import Doctorlogin from '../../admin/src/pages/Login'
 
 const App = () => {
   return (
@@ -32,6 +32,7 @@ const App = () => {
         < Route path='/my-appointment' element={<MyAppointment />} />
         < Route path='/my-appointment/:docId' element={<Appointment />} />
         < Route path='/contact' element={<Contact />} />
+        {/* < Route path='/doctorlogin' element={<Doctorlogin />} /> */}
 
       </Routes>
       </PageTransition>

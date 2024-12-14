@@ -16,7 +16,7 @@ useEffect(() => {
 
       setDoctorsToShow(doctorsSubset);
           setLoading(false);
-    }, 400);
+    }, 800);
   }, [doctors]);
 
   return (
