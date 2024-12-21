@@ -9,7 +9,14 @@ export default defineConfig({
     postcss: './postcss.config.js',
   },
 
-  server:{port:5174}
+  server:{port:5174},
+
+  build: {
+    rollupOptions: {
+      external: ['axios'], // Explicitly mark axios as external
+    },
+  },
+
 })
 
 
