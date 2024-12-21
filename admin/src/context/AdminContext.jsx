@@ -97,7 +97,7 @@ const getDashData =async ()=>{
         
         if (data.success) {
             setdashData(data.dashData)
-            console.log(data.dashData)
+            // console.log(data.dashData)
         } else {
             toast.error(error.message)
         }

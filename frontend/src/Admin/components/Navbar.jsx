@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react'
-import { AdminContext } from '../context/AdminContext'
-import { assets } from '../assets/assets'
+import { AdminContext } from '../../../../admin/src/context/AdminContext'
+import { assets } from '../../../../admin/src/assets/assets'
 import { useNavigate } from 'react-router-dom'
-import { DoctorContext } from '../context/DoctorContext'
+import { DoctorContext } from '../../../../admin/src/context/DoctorContext'
 
   const Navbar = () => {
   const {atoken,setAtoken} = useContext(AdminContext)
@@ -25,16 +25,6 @@ import { DoctorContext } from '../context/DoctorContext'
     // window.location.reload();
   }
 
-  const handleLogoClick = () => {
-    if (atoken) {
-      navigate('/admin-dashbord');
-    } else if (dToken) {
-      navigate('/doctor-dashboard');
-    } else {
-      navigate('/login');
-    }
-  };
-
   useEffect(() => {
     if (!atoken ) {
       navigate('/login', { replace: true });
@@ -45,10 +35,7 @@ import { DoctorContext } from '../context/DoctorContext'
   return (
     <div className='flex justify-between items-center px-4 sm:px-10 py-3 border-b bg-white'>
       <div className='flex items-center gap-2 text-xs'>
-        <img 
-        // onClick={()=>{navigate('/admin-dashbord')}} 
-        onClick={handleLogoClick}
-        className='w-36 sm:w-40 cursor-pointer' src={assets.admin_logo} alt="" />
+        <img onClick={()=>{console.log('Navigating to /admin-dashbord'); navigate('/admin-dashbord')}} className='w-36 sm:w-40 cursor-pointer' src={assets.admin_logo} alt="" />
         <p className='border px-2.5 py-0 rounded-full bordedr-gray-500 text-gray-600'>{atoken ? 'Admin' : 'Doctor'}</p>
       </div>
       <button onClick={logout} className='bg-primary text-white text-sm px-10 py-2 rounded-full'>Logout</button>

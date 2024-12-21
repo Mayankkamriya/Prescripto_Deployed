@@ -2,9 +2,13 @@ import express from 'express'
 import { registerUser, loginUser, getProfile, updateProfile, bookAppointment, listAppointment, cancelAppointment,
      paymentPhonePe, verifyPhonePePayment,paymentstatus } from '../controllers/userController.js'
 import authUser from '../middlewares/authUser.js'
+import {loginAdmin} from '../controllers/adminController.js'
 import upload from '../middlewares/multer.js'
 
 const userRouter = express.Router()
+
+const adminRouter = express.Router()
+adminRouter.post('/loginAdmin',loginAdmin)
 
 userRouter.post('/register' ,registerUser)
 userRouter.post('/login' ,loginUser)

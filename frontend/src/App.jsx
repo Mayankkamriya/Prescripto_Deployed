@@ -1,44 +1,86 @@
-import { Routes , Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Doctor from './pages/Doctor'
-import About from './pages/About'
-import MyProfile from './pages/MyProfile'
-import Login from './pages/Login'
-import MyAppointment from './pages/MyAppointment'
-import Contact from './pages/Contact'
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import { ToastContainer, toast } from 'react-toastify';
+
+import React, { useContext } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import React from 'react';
-import Appointment from './pages/Appointment'
-import PageTransition from './components/PageTransition'
-import Doctorlogin from '../../admin/src/pages/Login'
+
+// Admin Components
+import AdminLogin from '../../admin/src/pages/Login';
+import { AdminContext } from '../../admin/src/context/AdminContext';
+import { DoctorContext } from '../../admin/src/context/DoctorContext';
+import Navbar from '../../admin/src/components/Navbar';
+import Sidebar from './Admin/components/Sidebar';
+import AdminDashboard from './Admin/Dashboard';
+import DoctorsList from './Admin/DoctorsList';
+import AddDoctor from './Admin/AddDoctor';
+import AllAppointments from './Admin/AllApointments';
+import DoctorsAppointment from './Doctor/DoctorsAppointment';
+import DoctorDashboard from './Doctor/DoctorDashboard';
+import DoctorProfile from './Doctor/DoctorProfile';
+
+// Frontend Components
+import Home from './pages/Home';
+import Doctor from './pages/Doctor';
+import About from './pages/About';
+import MyProfile from './pages/MyProfile';
+import Login from './pages/Login';
+import MyAppointment from './pages/MyAppointment';
+import Appointment from './pages/Appointment';
+import Contact from './pages/Contact';
+import NavbarFrontend from './components/Navbar';
+import Footer from './components/Footer';
+import PageTransition from './components/PageTransition';
 
 const App = () => {
+  const { atoken } = useContext(AdminContext);
+  const { dToken } = useContext(DoctorContext);
+
   return (
-    <div className='mx-4 sm:mx-[10%]'>
-      <ToastContainer/>
-      <Navbar/>
+    <>
+      <ToastContainer />
+      {atoken || dToken ? (
+        <div className="bg-[#F8F9FD]">
+          <Navbar />
+          <div className="flex items-start">
+            <Sidebar />
+            <Routes>
+              {/* Admin Routes */}
+              <Route path="/" element={<AdminDashboard />} />
+              <Route path="/admin-dashbord" element={<AdminDashboard />} />
+              <Route path="/all-appointments" element={<AllAppointments />} />
+              <Route path="/add-doctor" element={<AddDoctor />} />
+              <Route path="/doctor-list" element={<DoctorsList />} />
 
-      <PageTransition>
-      <Routes>
-        < Route path='/' element={<Home />} />
-        < Route path='/doctor' element={<Doctor />} />
-        < Route path='/doctors/:speciality' element={<Doctor />} />
-        < Route path='/login' element={<Login />} />
-        < Route path='/my-profile' element={<MyProfile />} />
-        < Route path='/about' element={<About />} />
-        < Route path='/my-appointment' element={<MyAppointment />} />
-        < Route path='/my-appointment/:docId' element={<Appointment />} />
-        < Route path='/contact' element={<Contact />} />
-        {/* < Route path='/doctorlogin' element={<Doctorlogin />} /> */}
+              {/* Doctor Routes */}
+              <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+              <Route path="/doctor-appointments" element={<DoctorsAppointment />} />
+              <Route path="/doctor-profile" element={<DoctorProfile />} />
+            </Routes>
+          </div>
+        </div>
+      ) : (
+        <div className="mx-4 sm:mx-[10%]">
+          <NavbarFrontend />
+          <PageTransition>
+            <Routes>
+              {/* Frontend Routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/doctor" element={<Doctor />} />
+              <Route path="/doctors/:speciality" element={<Doctor />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/my-profile" element={<MyProfile />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/my-appointment" element={<MyAppointment />} />
+              <Route path="/my-appointment/:docId" element={<Appointment />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
+            </Routes>
+          </PageTransition>
+          <Footer />
+        </div>
+      )}
+    </>
+  );
+};
 
-      </Routes>
-      </PageTransition>
-      <Footer/>
-      </div>
-  )
-}
-
-export default App
+export default App;

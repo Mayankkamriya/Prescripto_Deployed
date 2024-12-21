@@ -51,8 +51,13 @@ useEffect(()=>{
   }
 }, [token])
  
+ // Navigate to Admin Login
+ const redirectToAdminLogin = () => {
+  navigate('/admin/login') // Assuming '/admin/login' is your admin login route
+}
 
   return (
+    <div>
   <form onSubmit={onSubmitHandler}  className='min-h-[80vh] flex items-center' action=""> 
     <div className= 'flex flex-col gap-3 m-auto items-start p-8 min-w-[340px] sm:min-w-96 border rounded-xl text-zinc-600 text-sm shadow-lg '>
       <p className='text-2xl font-semibold'> {state === 'Sign Up' ? "Create Account" : "Login" }</p> {/* if Sign Up show Create Account */}
@@ -80,10 +85,11 @@ useEffect(()=>{
         ? <p>Already have an account? <span onClick={()=> setState('Login')} className='text-primary underline cursor-pointer'>Login</span></p>
         : <p>Create an new account? <span onClick={()=> setState('Sign Up')} className='text-primary underline cursor-pointer'> Sign Up</span></p>
       }
-    
+    <p>Login as <span onClick={redirectToAdminLogin} className='text-primary underline cursor-pointer'> Doctor</span></p>
     </div>
-  </form>
-  )
+    </form>
+
+  </div> )
 }
 
 export default Login
