@@ -8,8 +8,8 @@ import axios from 'axios'
 import crypto from 'crypto'
 import validator from 'validator'
 
- const backendUrl = 'https://prescriptogit-backend.onrender.com'
-// const backendUrl = process.env.VITE_BACKEND_URL || 'http://localhost:5000' ;
+const backendUrl = process.env.VITE_BACKEND_URL ;
+// console.log('process.env.VITE_BACKEND_URL1....', process.env.VITE_BACKEND_URL)
 
 //API to register user 
 const registerUser = async (req,res) =>{
@@ -237,8 +237,10 @@ const paymentPhonePe = async (req, res) => {
       if (!appointmentData || appointmentData.cancelled) {
         return res.json({ success: false, message: "Appointment Cancelled or not found" });
       }
-      const redirectUrl = 'https://prescriptogit-backend.onrender.com'
-      // const  redirectUrl = process.env.VITE_BACKEND_URL
+      
+    const  redirectUrl = process.env.VITE_BACKEND_URL
+    // console.log('process.env.VITE_BACKEND_URL2....', process.env.VITE_BACKEND_URL)
+
     const data = {
       merchantId: merchant_id,
       merchantTransactionId: transactionId,
@@ -343,14 +345,17 @@ const response = await axios(option)
 //       // console.log('paymentDetails....',paymentDetails)
 
 await verifyPhonePePayment (response.data,appointmentId)
-      const successredirecturl = 'https://prescriptogit-frontend.onrender.com'
-      // const successredirecturl = process.env.VITE_FRONTEND_URL
+      
+      const successredirecturl = process.env.VITE_FRONTEND_URL
+// console.log('process.env.VITE_FRONTEND_URL3....', process.env.VITE_FRONTEND_URL)
+
       res.redirect(`${successredirecturl}/my-appointment?paymentDetails=${encodeURIComponent(JSON.stringify(paymentDetails))}`);
 
     }else{
       
-      const successredirecturl = 'https://prescriptogit-frontend.onrender.com'
-      // const successredirecturl = process.env.VITE_FRONTEND_URL
+      const successredirecturl = process.env.VITE_FRONTEND_URL
+// console.log('process.env.VITE_FRONTEND_URL4....', process.env.VITE_FRONTEND_URL)
+
         return res.redirect(`${successredirecturl}/`)
     }
 
