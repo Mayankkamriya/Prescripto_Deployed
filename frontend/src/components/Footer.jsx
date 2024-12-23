@@ -39,13 +39,40 @@ const Footer = () => {
         </div>
 
         {/*--------------- Right side ----------------*/}
-        <div>
+        {/* <div>
         <p className='text-xl font-medium mb-5'>GET IN TOUCH</p>
         <ul className='flex flex-col gap-2 text-gray-600'>
             <li>+91 825-303-8815</li>
             <li>kamriyamayank45@gmail.com</li>
         </ul>
-        </div>
+        </div> */}
+
+<div>
+    <p className='text-xl font-medium mb-5'>GET IN TOUCH</p>
+    <ul className='flex flex-col gap-2 text-gray-600'>
+        {/* <li>+91 825-303-8815</li> */}
+        <li>
+            <a 
+                href="tel:+918253038815" 
+                className="text-blue-500 underline"
+            >
+                +91 825-303-8815
+            </a>
+        </li>
+        <li>
+            <a 
+                href="mailto:kamriyamayank45@gmail.com?subject=Hello Mayank&body=I would like to get in touch with you." 
+                className="text-blue-500 underline"
+            >
+                kamriyamayank45@gmail.com
+            </a>
+        </li>
+    </ul>
+</div>
+
+
+
+
 
     </div>
         {/*-----------Copyright Text-----------*/}
