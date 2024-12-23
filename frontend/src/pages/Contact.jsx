@@ -14,7 +14,7 @@ const contact = () => {
     <div className='flex flex-col justofy-center items-start gap-6'>
      <p className='font-semibold text-lg text-gray-600'>OUR OFFICE</p>
      <p className='text-gray-500'>B-24 Road No.3, Alkapuri <br /> Ratlam (M.P.)</p>
-     <p className='text-gray-500'> Mob : +91 825-303-8815 <br />Email: kamriyamayank45@gmail.com</p>
+     <p className='text-gray-500'> Mob : +91 8253038815 <br />Email: kamriyamayank45@gmail.com</p>
      <p className='font-semibold text-lg text-gray-600'>Careers at PRESCRIPTO</p>
      <p className='text-gray-500'>Learn more about our teams an job openings.</p> 
      <button className='border border-black px-8 py-4 text-sm hover:bg-black hover:text-white transition-all duration-500'>Explore Jobs</button>

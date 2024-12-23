@@ -21,7 +21,6 @@ const Doctor = () => {
 
 
   if(doctors.length>0){
-    console.log('doctors.length>0....')
   
     setTimeout(() => {
         setLoading(false);

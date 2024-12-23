@@ -54,15 +54,15 @@ const Footer = () => {
         <li>
             <a 
                 href="tel:+918253038815" 
-                className="text-blue-500 underline"
+                className="text-gray-600 "
             >
-                +91 825-303-8815
+                +91 8253038815
             </a>
         </li>
         <li>
             <a 
-                href="mailto:kamriyamayank45@gmail.com?subject=Hello Mayank&body=I would like to get in touch with you." 
-                className="text-blue-500 underline"
+                href="mailto:kamriyamayank45@gmail.com?subject=Hello Prescripto&body=I would like to get in touch with you." 
+                className="text-gray-600 "
             >
                 kamriyamayank45@gmail.com
             </a>

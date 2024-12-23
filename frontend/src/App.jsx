@@ -5,18 +5,18 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Admin Components
-import AdminLogin from '../../admin/src/pages/Login';
-import { AdminContext } from '../../admin/src/context/AdminContext';
-import { DoctorContext } from '../../admin/src/context/DoctorContext';
-import Navbar from '../../admin/src/components/Navbar';
+import AdminLogin from './Admin/pages/Login';
+import { AdminContext } from './Admin/context/AdminContext';
+import { DoctorContext } from './Admin/context/DoctorContext';
+import Navbar from './Admin/components/Navbar';
 import Sidebar from './Admin/components/Sidebar';
-import AdminDashboard from './Admin/Dashboard';
-import DoctorsList from './Admin/DoctorsList';
-import AddDoctor from './Admin/AddDoctor';
-import AllAppointments from './Admin/AllApointments';
-import DoctorsAppointment from './Doctor/DoctorsAppointment';
-import DoctorDashboard from './Doctor/DoctorDashboard';
-import DoctorProfile from './Doctor/DoctorProfile';
+import AdminDashboard from './Admin/pages/Admin/Dashboard';
+import DoctorsList from './Admin/pages/Admin/DoctorsList';
+import AddDoctor from './Admin/pages/Admin/AddDoctor';
+import AllAppointments from './Admin/pages/Admin/AllApointments';
+import DoctorsAppointment from './Admin/pages/Doctor/DoctorsAppointment'
+import DoctorDashboard from './Admin/pages/Doctor/DoctorDashboard';
+import DoctorProfile from './Admin/pages/Doctor/DoctorProfile';
 
 // Frontend Components
 import Home from './pages/Home';
@@ -45,7 +45,7 @@ const App = () => {
             <Sidebar />
             <Routes>
               {/* Admin Routes */}
-              <Route path="/" element={<AdminDashboard />} />
+              {/* <Route path="/" element={<AdminDashboard />} /> */}
               <Route path="/admin-dashbord" element={<AdminDashboard />} />
               <Route path="/all-appointments" element={<AllAppointments />} />
               <Route path="/add-doctor" element={<AddDoctor />} />

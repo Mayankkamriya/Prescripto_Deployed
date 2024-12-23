@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
-import { AdminContext } from '../../../../admin/src/context/AdminContext'
+import { AdminContext } from '../context/AdminContext'
 import { NavLink } from 'react-router-dom'
-import { assets } from '../../../../admin/src/assets/assets'
-import { DoctorContext } from '../../../../admin/src/context/DoctorContext'
+import { assets } from '../assets/assets'
+import { DoctorContext } from '../context/DoctorContext'
 
 const Sidebar = () => {
 const {atoken} = useContext(AdminContext)
