@@ -119,6 +119,7 @@ token && userData ? (<div>
       </ul>
 
       {/* Profile or Login/Signup Button */}
+      {window.innerWidth >= 768 && (
       <div className="hidden md:flex items-center gap-4">
         {token && userData ? (
           <div className="relative flex items-center gap-2 cursor-pointer group">
@@ -161,6 +162,7 @@ token && userData ? (<div>
           </button>
         )}
       </div>
+      )}
     </div>
   );
 };
