@@ -51,7 +51,9 @@ const Navbar = () => {
       />
 
       {/* Hamburger Icon for Mobile View */}
-      <button
+     
+      {window.innerWidth <= 768 && (
+         <button
         className="md:hidden flex items-center focus:outline-none"
         // onClick={() => setShowMenu(!showMenu)}
         onClick={(event) => {
@@ -62,6 +64,7 @@ const Navbar = () => {
       >
         <img src={assets.Hamburger} alt="Menu" className="w-6 h-6" />
       </button>
+      )}
 
         <ul
         id="mobileMenu"
