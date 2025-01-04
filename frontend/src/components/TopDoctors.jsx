@@ -11,13 +11,11 @@ const [loading, setLoading] = useState(true);
 const [doctorsToShow, setDoctorsToShow] = useState([]);
 
 useEffect(() => {
-    setTimeout(() => {
-      const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 5) : doctors.slice(0, 10);
-
-      setDoctorsToShow(doctorsSubset);
-    //   console.log('.length ...',doctorsSubset.length)
-          setLoading(false);
-    }, 800);
+        if(doctors.length>0){
+        const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 5) : doctors.slice(0, 10);
+        setDoctorsToShow(doctorsSubset);
+        setLoading(false);
+        }
   }, [doctors]);
 
   return (

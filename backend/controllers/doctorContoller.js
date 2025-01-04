@@ -19,8 +19,16 @@ const changeAvailablity = async (req, res)=>{
 
 const doctorList = async (req, res)=>{
   try {
-    const doctors = await doctorModel.find({}).select(['-password' , '-email'])
-    res.json({success:true,doctors})
+    const doctors = await doctorModel.find({})
+    .select(['-password' , '-email'])
+    
+      // Encode the Doctors data
+      const encodedto = `${process.env.ENCODETO}`
+      const encodedDoctors = Buffer.from(JSON.stringify(doctors)).toString(encodedto);
+     
+      res.json({ success: true, data: encodedDoctors });
+
+    // res.json({success:true,doctors})
 
 } catch (error) {
     console.log(error)

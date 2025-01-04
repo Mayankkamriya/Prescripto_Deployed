@@ -31,7 +31,7 @@ const onSubmitHandler = async (event)=>{
     } else {
       const {data} = await axios.post(backendUrl + '/api/user/login' ,{email,password})
       if (data.success) {
-        console.log('Login Success:', data);
+        // console.log('Login Success:', data);
         localStorage.setItem('token',data.token)
         setToken(data.token)
       } else {

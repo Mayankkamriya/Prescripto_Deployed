@@ -17,7 +17,9 @@ const getDoctorsData = async() =>{
     try {
         const {data} = await axios.get(backendUrl + '/api/doctor/list')
         if (data.success) {
-            setDoctors(data.doctors)
+            const decodedData = JSON.parse(atob(data.data));
+            setDoctors(decodedData);
+            // setDoctors(data.doctors)
         } else {
             toast.error(data.message)
         }
@@ -33,7 +35,11 @@ const loadUserProfileData = async() =>{
 
         const {data} = await axios.get(backendUrl+ '/api/user/getProfile', {headers:{token}})
         if (data.success) {
-            setUserData(data.userData)
+
+            const userData = JSON.parse(atob(data.data));
+            setUserData(userData);
+            // setUserData(data.userData)
+
         } else {
             toast.error(error.message)
         }
@@ -47,10 +53,14 @@ const loadUserProfileData = async() =>{
 const getUserAppointments = async () =>{
     try {
       const {data} = await axios.get(backendUrl + '/api/user/appointments', {headers:{token}})
+      
       if (data.success) {
-        setAppointments(data.appointments.reverse())
-      console.log('appointments data',data.appointments)
-      }
+        const decodedData = JSON.parse(atob(data.data));
+        setAppointments(decodedData.reverse());
+
+        // if we are not encodeing and decodeing it
+        // setAppointments(data.appointments.reverse())
+    } 
     
     } catch (error) {
       console.log(error)

@@ -34,7 +34,7 @@ const MyAppointment = () => {
 
     if (response.data && response.data.data.instrumentResponse.redirectInfo.url) {
         window.location.href= response.data.data.instrumentResponse.redirectInfo.url;
-        console.log('Api Response Infrontend  ....',response.data)
+        // console.log('Api Response Infrontend  ....',response.data)
       }
 
     if (response.success) {

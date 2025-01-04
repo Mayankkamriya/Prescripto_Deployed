@@ -11,6 +11,7 @@ const Doctor = () => {
   const {doctors} = useContext(AppContext)
 
   const applyFilter =()=>{
+  if (doctors.length>0){
     if(speciality){
       setFilterDoc(doctors.filter(doc => doc.speciality === speciality))
     }
@@ -18,6 +19,7 @@ const Doctor = () => {
       setFilterDoc(doctors)
     }
   }
+}
 
 
   if(doctors.length>0){

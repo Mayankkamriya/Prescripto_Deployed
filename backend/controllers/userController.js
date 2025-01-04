@@ -81,8 +81,14 @@ const getProfile = async (req,res)=>{
     try {
         const { userId}= req.body
         const userData = await userModel.findById(userId).select('-password')
-
-        res.json({success:true, userData})
+  
+        // Encode the user data
+  const encodedto = `${process.env.ENCODETO}`
+  const encodeduserData = Buffer.from(JSON.stringify(userData)).toString(encodedto);
+ 
+  res.json({ success: true, data: encodeduserData });
+        // res.json({success:true, userData})
+        
     } catch (error) {
         console.log(error)
         res.json({success:false , message:error.message})
@@ -121,7 +127,8 @@ const bookAppointment = async (req,res)=> {
 try {
     const {userId, docId, slotDate, slotTime } = req.body
 
-    const docData = await doctorModel.findById(docId).select('-password')
+    const docData = await doctorModel.findById(docId)
+    .select(['-password'])
 
     if (!docData.available) {
         return res.json({success:false, message: 'Doctor not available'})
@@ -181,8 +188,18 @@ const listAppointment = async (req,res) =>{
     try {
         const {userId} = req.body
         const appointments = await appointmentModel.find({userId})
+        .select('-userData -docData.slots_booked -docData.fees -docData.experience -docData.email -docData.degree -docData.about ')
+        appointments.forEach((appointment) => {
+          if (appointment.docData && appointment.docData.slots_booked) {
+              delete appointment.docData.slots_booked;
+          }
+      });
 
-        res.json({success:true, appointments})
+         // Encode the appointments data
+         const encodedto = `${process.env.ENCODETO}`
+    const encodedAppointments = Buffer.from(JSON.stringify(appointments)).toString(encodedto);
+   
+    res.json({ success: true, data: encodedAppointments });
 
     } catch (error) {
         console.log(error)
