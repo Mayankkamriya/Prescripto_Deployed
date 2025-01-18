@@ -344,7 +344,7 @@ const response = await axios(option)
          
       // res.json({message: "payment successfull", data: response.data}) //black page crome
       
-      console.log('response.data....',response.data)
+      // console.log('response.data....',response.data)
       const paymentDetails = {
         transactionId: response.data.data.transactionId || "N/A",
         amount: response.data.data.amount/100 || 0, // Convert if necessary
@@ -366,7 +366,9 @@ await verifyPhonePePayment (response.data,appointmentId)
       const successredirecturl = process.env.VITE_FRONTEND_URL
 // console.log('process.env.VITE_FRONTEND_URL3....', process.env.VITE_FRONTEND_URL)
 
-      res.redirect(`${successredirecturl}/my-appointment?paymentDetails=${encodeURIComponent(JSON.stringify(paymentDetails))}`);
+      // res.redirect(`${successredirecturl}/my-appointment?paymentDetails=${encodeURIComponent(JSON.stringify(paymentDetails))}`);
+     res.redirect(`${successredirecturl}/PaymentSuccess?paymentDetails=${encodeURIComponent(JSON.stringify(paymentDetails))}`);
+
 
     }else{
       

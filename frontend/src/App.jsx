@@ -30,6 +30,7 @@ import Contact from './pages/Contact';
 import NavbarFrontend from './components/Navbar';
 import Footer from './components/Footer';
 import PageTransition from './components/PageTransition';
+import PaymentSuccess from './pages/PaymentSuccess'
 
 const App = () => {
   const { atoken } = useContext(AdminContext);
@@ -74,6 +75,7 @@ const App = () => {
               <Route path="/my-appointment/:docId" element={<Appointment />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/PaymentSuccess" element={<PaymentSuccess />} />
             </Routes>
           </PageTransition>
           <Footer />

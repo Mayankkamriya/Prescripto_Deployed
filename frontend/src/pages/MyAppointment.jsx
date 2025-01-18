@@ -121,7 +121,7 @@ if(appointments.length>0){
 useEffect(()=>{
   const searchParams = new URLSearchParams(location.search);
   const details = searchParams.get('paymentDetails');
- console.log('details....',details)
+//  console.log('details....',details)
   if (details) {
     setPaymentDetails(JSON.parse(decodeURIComponent(details))); // Parse and storing payment details
   
