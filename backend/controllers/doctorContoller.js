@@ -19,8 +19,8 @@ const changeAvailablity = async (req, res)=>{
 
 const doctorList = async (req, res)=>{
   try {
-    // const totalDoctorsPromise = await doctorModel.countDocuments({});
-    const limit = Math.min( parseInt(req.query.limit) ||  40);
+    const totalDoctors = await doctorModel.countDocuments({});
+    const limit = Math.min( parseInt(req.query.limit) || totalDoctors);
 
     const doctors = await doctorModel.find({})
     .select(['-password' , '-email'])
