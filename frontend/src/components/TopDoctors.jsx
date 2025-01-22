@@ -1,26 +1,84 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState,useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 import Loader from './Loader';
 
 const TopDoctors = () => {
-const {doctors,setlimit} = useContext(AppContext)
+const {doctors,setlimit,getDoctorsData} = useContext(AppContext)
 const navigate = useNavigate()
 
 const [loading, setLoading] = useState(true);
 const [doctorsToShow, setDoctorsToShow] = useState([]);
 
-useEffect(() => {
-        if(doctors.length>0){
+const calculateAndFetchDoctors = useCallback(async () => {
+    const limit = window.innerWidth < 640 ? 5 : 10; // Calculate limit based on screen size
+    setlimit(limit); // Set the limit in context for global usage
+    // console.log('Limit value in TopDoctors file:', limit);
 
-        const limit= window.innerWidth < 640 ? 5: 10
-        setlimit(limit)
-        
-        const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 5) : doctors.slice(0, 10);
-        setDoctorsToShow(doctorsSubset);
-        setLoading(false);
+    // Check if data is already available in context
+    if (doctors.length === 0) {
+        const fetchedDoctors = await getDoctorsData(limit); // Fetch data if not already available
+        if (fetchedDoctors && fetchedDoctors.length > 0) {
+            setDoctorsToShow(fetchedDoctors.slice(0, limit));
         }
-  }, [doctors]);
+    } else {
+        setDoctorsToShow(doctors.slice(0, limit)); // Use already available data
+    }
+    setLoading(false);
+}, [doctors, getDoctorsData, setlimit]);
+
+
+// useEffect(() => {
+    // const calculateAndFetchDoctors = useCallback(async () => {
+    //     const limit = window.innerWidth < 640 ? 5 : 10; // Calculate limit based on screen size
+    //     setlimit(limit); // Set the limit in context for global usage
+    //     console.log("Limit value in TopDoctors file:", limit);
+
+    //     // Fetch doctors data with the custom limit
+    //     const fetchedDoctors = await getDoctorsData(limit); // Assuming getDoctorsData returns data
+    //     if (fetchedDoctors && fetchedDoctors.length > 0) {
+    //         const doctorsSubset = limit === 5 ? fetchedDoctors.slice(0, 5) : fetchedDoctors.slice(0, 10);
+    //         setDoctorsToShow(doctorsSubset);
+    //         setLoading(false);
+    //     }
+    // }, [doctors, getDoctorsData, setlimit]);
+    
+useEffect(() => {
+    calculateAndFetchDoctors(); // Call the function on component mount
+}, [calculateAndFetchDoctors]);
+
+    // calculateAndFetchDoctors(); // Call the function on component mount
+// }, [doctors.length]); // Remove dependency on doctors
+
+
+// Working fine but only one problem that it is continuously running
+// useEffect(() => {
+//     const limit = window.innerWidth < 640 ? 5 : 10;
+//     setlimit(limit); // Set the limit in context for global usage
+//     console.log("Limit value in TopDoctors file:", limit);
+
+//     // Fetch doctors data with the custom limit
+//     getDoctorsData(limit).then(() => {
+//         if (doctors.length > 0) {
+//             const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 5) : doctors.slice(0, 10);
+//             setDoctorsToShow(doctorsSubset);
+//             setLoading(false);
+//         }
+//     });
+// }, [doctors]);
+
+
+// useEffect(() => {
+//         if(doctors.length>0){
+
+//         const limit= window.innerWidth < 640 ? 5: 10
+//         setlimit(limit)
+//         console.log('limit value in topDoctors file..',limit)
+//         const doctorsSubset = window.innerWidth < 640 ? doctors.slice(0, 5) : doctors.slice(0, 10);
+//         setDoctorsToShow(doctorsSubset);
+//         setLoading(false);
+//         }
+//   }, [doctors,setlimit]);
 
   return (
     <div className='flex flex-col items-center gap-4 mt-0 mb-16 text-gray-900 md:mx-10'>

@@ -19,9 +19,13 @@ const changeAvailablity = async (req, res)=>{
 
 const doctorList = async (req, res)=>{
   try {
-    const totalDoctors = await doctorModel.countDocuments({});
-    const limit = Math.min( parseInt(req.query.limit) || totalDoctors);
 
+// Default to 17 if limit is not provided
+const limit = req.query.limit ? Math.min(parseInt(req.query.limit), 17) : 17; // Ensure the limit doesn't exceed 17
+
+    // const totalDoctors = await doctorModel.countDocuments({});
+    // const limit = Math.min( parseInt(req.query.limit) );
+// console.log('req.query.limit...limit....',req.query.limit,limit)
     const doctors = await doctorModel.find({})
     .select(['-password' , '-email'])
     .limit(limit);
