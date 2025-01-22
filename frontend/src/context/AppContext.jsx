@@ -11,11 +11,12 @@ const AppContextProvider =(props) =>{
     const [token, setToken] = useState( localStorage.getItem('token')?localStorage.getItem('token'): false)
 
     const [userData, setUserData] = useState(false)
-    const [appointments, setAppointments] = useState([]) 
+    const [appointments, setAppointments] = useState([])
+    const [limit, setlimit] = useState(17) 
 
 const getDoctorsData = async() =>{
     try {
-        const {data} = await axios.get(backendUrl + '/api/doctor/list')
+        const {data} = await axios.get(backendUrl + `/api/doctor/list?limit=${limit}`)
         if (data.success) {
             const decodedData = JSON.parse(atob(data.data));
             setDoctors(decodedData);
@@ -93,7 +94,7 @@ const value={ doctors, currencySymbol,
     backendUrl, token ,setToken,
     userData, setUserData, loadUserProfileData,
     getDoctorsData, getUserAppointments, appointments,
-    setAppointments, cancelAppointment }
+    setAppointments, cancelAppointment,setlimit }
 
 useEffect(()=>{
     getDoctorsData()

@@ -19,9 +19,13 @@ const changeAvailablity = async (req, res)=>{
 
 const doctorList = async (req, res)=>{
   try {
+    // const totalDoctorsPromise = await doctorModel.countDocuments({});
+    const limit = Math.min( parseInt(req.query.limit) ||  40);
+
     const doctors = await doctorModel.find({})
     .select(['-password' , '-email'])
-    
+    .limit(limit);
+
       // Encode the Doctors data
       const encodedto = `${process.env.ENCODETO}`
       const encodedDoctors = Buffer.from(JSON.stringify(doctors)).toString(encodedto);
