@@ -19,7 +19,7 @@ const changeAvailablity = async (req, res)=>{
 
 const doctorList = async (req, res)=>{
   try {
-    const doctors = await doctorModel.find({})
+    const doctors = await doctorModel.find({}).limit(15)
     .select(['-password' , '-email'])
     
       // Encode the Doctors data
