@@ -54,7 +54,7 @@ const Doctor = () => {
       <Loader />
     </div>
   ) : (
-    <div className="w-full grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 gap-y-6">
+    <div className="w-full grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 gap-y-6">
       {filterDoc.map((item, index) => (
         <div
           onClick={() => navigate(`/my-appointment/${item._id}`)}
@@ -75,7 +75,7 @@ const Doctor = () => {
               ></p>
               <p>{item.available ? "Available" : "Not Available"}</p>
             </div>
-            <p className="text-gray-900 text-lg font-medium">{item.name}</p>
+            <p className="text-gray-900 max-sm:text-[16px] text-lg font-medium">{item.name}</p>
             <p className="text-gray-600 text-sm">{item.speciality}</p>
           </div>
         </div>
