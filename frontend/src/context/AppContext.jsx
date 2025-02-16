@@ -14,12 +14,12 @@ const AppContextProvider =(props) =>{
     const [appointments, setAppointments] = useState([])
     const [limit, setlimit] = useState(17) 
 
-const getDoctorsData = async(customLimit) =>{
+const getDoctorsData = async(customLimit=17) =>{
     try {
 // console.log('customlimit just enter in getDoctorsData function...', customLimit)
         const effectiveLimit = customLimit || limit; // Use customLimit if provided, else default to the state value
-        // console.log("Effective limit just before URL:", effectiveLimit);
-        
+        console.log("Effective limit just before URL:", effectiveLimit);
+
         const {data} = await axios.get(backendUrl + `/api/doctor/list?limit=${effectiveLimit}`)
         if (data.success) {
             const decodedData = JSON.parse(atob(data.data));

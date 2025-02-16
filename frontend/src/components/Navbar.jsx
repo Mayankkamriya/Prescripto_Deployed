@@ -78,8 +78,13 @@ const Navbar = () => {
          <hr className='border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden' />
          )}
        </NavLink>
-       <NavLink to='/doctor' >
-       <li  onClick={() => setShowMenu(false)}  className='py-2' >All DOCTOR</li>
+       <NavLink to="/doctor" 
+  onClick={(e) => {
+    e.preventDefault(); // Prevent React Router's default behavior
+    setShowMenu(false); // Close the menu
+    window.location.href = '/doctor'; // Perform navigation and refresh
+  }} >
+       <li className='py-2' >All DOCTOR</li>
        {window.innerWidth >= 768 && (
          <hr className='border-none outline-none h-0.5 bg-primary w-3/5 m-auto hidden' />
        )}
