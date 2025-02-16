@@ -21,7 +21,7 @@ const doctorList = async (req, res)=>{
   try {
     const doctors = await doctorModel.find({}).limit(15)
     .select(['-password' , '-email'])
-    
+
       // Encode the Doctors data
       const encodedto = `${process.env.ENCODETO}`
       const encodedDoctors = Buffer.from(JSON.stringify(doctors)).toString(encodedto);

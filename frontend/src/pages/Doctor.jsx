@@ -26,7 +26,7 @@ const Doctor = () => {
   
     setTimeout(() => {
         setLoading(false);
-    }, 400);
+    }, 1);
   }
 
 

@@ -141,7 +141,7 @@ const togglePaymentDetails = (appointmentId) => {
 };
 
   return (
-    <div>
+    <div className='m-4'>
     <p className='pb-3 mt-12 font-medium text-zinc-700 border-b'>MyAppointment</p>
 
     <div>
