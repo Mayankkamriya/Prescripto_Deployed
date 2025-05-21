@@ -41,6 +41,9 @@ app.get('/' ,(req,res)=>{
     res.send('API WORKING manoj 2')
 })
 
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'API WORKING manoj 2' });
+});
 
 // Serve static files from frontend
 app.use(express.static(path.join(__dirname, "../frontend/build")));
@@ -196,3 +199,4 @@ app.listen(port, ()=>
     console.log("Server Started" , port ) )
 
 
+export default app;
