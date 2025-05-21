@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js",
-    "build": "cd ../frontend && npm install && npm run build || echo 'Frontend not found!'"
+    "build": "cd ../frontend && npm install && npm run build || echo 'Frontend not found!'",
+    "vercel-build": "npm install && npm run build"
   },
   "author": "",
   "license": "ISC",
